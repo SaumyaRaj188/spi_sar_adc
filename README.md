@@ -35,6 +35,8 @@ gtkwave tb_adc_controller.vcd
 ```
 
 
+# SPI Interface
+Type 0
 
 ## SPI Register Summary
 
@@ -80,3 +82,78 @@ gtkwave tb_adc_controller.vcd
 | Bit(s)   | Name         | Function                                     |
 | :------- | :----------- | :------------------------------------------- |
 | **[11:0]** | `CAL_OFFSET` | The 12-bit offset value from calibration.    |
+
+
+
+
+---
+## Frame Structure
+
+| Bits      | Field Name     | Size  | Description                                        |
+| :-------- | :------------- | :---- | :------------------------------------------------- |
+| **[15:14]** | **`CMD`** | 2 bits | Specifies the operation (Read, Write, etc.).        |
+| **[13:12]** | **`ADDR`** | 2 bits | Selects which of the four internal registers to access. |
+| **[11:0]** | **`PAYLOAD`** | 12 bits | Contains the data for a write or is ignored for a read. |
+
+### Field Definitions
+
+#### **`CMD` (Command)**
+* `2'b00`: **READ** - Reads data from the register at `ADDR`.
+* `2'b01`: **WRITE** - Writes the `PAYLOAD` to the register at `ADDR`.
+* `2'b10`: **SET MASK** - Sets bits in `CTRL_REG` using the `PAYLOAD` as a mask.
+* `2'b11`: **CLEAR MASK** - Clears bits in `CTRL_REG` using the `PAYLOAD` as a mask.
+
+#### **`ADDR` (Address)**
+* `2'b00`: `CTRL_REG` (Control Register)
+* `2'b01`: `STATUS_INFO_REG` (Status Register)
+* `2'b10`: `DATA_REG` (Data Register)
+* `2'b11`: `CAL_OFFSET_REG` (Calibration Register)
+
+### Usage Examples
+
+* **To WRITE `12'h5A5` to the `CTRL_REG`:**
+    * **CMD:** `01`
+    * **ADDR:** `00`
+    * **PAYLOAD:** `10110100101` (`5A5`)
+    * **Full 16-bit frame:** `0100 0101 1010 0101` = **`16'h45A5`**
+    * **Full 16-bit miso frame:** `0000 0000 0000 0000` = **`16'h0000`**
+
+* **To READ from the `STATUS_INFO_REG`:**
+    * **CMD:** `00`
+    * **ADDR:** `01`
+    * **PAYLOAD:** `000000000000` (Don't care)
+    * **Full 16-bit frame:** `0001 0000 0000 0000` = **`16'h1000`**
+    * **Full 16-bit miso frame:** `0000 ___ ___ ___` = **`16'h0___`**
+
+
+Of course. Here is the complete pinout for the final, synchronous `spi_controller` module we designed.
+
+The pins are categorized into System, SPI Interface, Control Outputs, and Data/Status Inputs, matching the Verilog module definition.
+
+***
+### ## `spi_controller` Pinout
+
+| Pin Name | Type | Function |
+| :--- | :--- | :--- |
+| **System Signals** |
+| `clk` | Input | **Main System Clock**. Drives the internal FSM and logic. |
+| `reset_n` | Input | **Active-Low Reset**. Asynchronously resets the entire module. |
+| **External SPI Bus** |
+| `spi_sclk` | Input | **Serial Clock** from the SPI master. |
+| `spi_cs` | Input | **Chip Select** (Active Low). Enables the SPI interface. |
+| `spi_mosi` | Input | **Master Out, Slave In**. Receives data from the master. |
+| `spi_miso` | Output | **Master In, Slave Out**. Sends data back to the master. |
+| **Control Outputs** |
+| `adc_en_o` | Output | `CTRL_REG[0]`: ADC Enable signal to the ADC core. |
+| `start_conv_o`| Output | `CTRL_REG[1]`: Start Conversion signal. |
+| `auto_mode_o` | Output | `CTRL_REG[2]`: Auto/Manual Mode select signal. |
+| `vref_sel_o` | Output | `CTRL_REG[3]`: Voltage Reference select signal. |
+| `int_en_o` | Output | `CTRL_REG[4]`: Interrupt Enable signal. |
+| `start_cal_o` | Output | `CTRL_REG[5]`: Start Calibration signal. |
+| `clk_sel_o` | Output | `CTRL_REG[6]`: Clock Select (8kHz/16kHz) signal. |
+| **Data/Status Inputs** |
+| `adc_data_i` | Input [11:0] | The 12-bit conversion result from the ADC core. |
+| `cal_offset_i`| Input [11:0] | The 12-bit calibration result from the ADC core. |
+| `eoc_i` | Input | **End of Conversion** flag from the ADC core. |
+| `busy_i` | Input | **Busy** flag from the ADC core. |
+| `vref_rdy_i` | Input | **Voltage Reference Ready** flag from the ADC core. |
