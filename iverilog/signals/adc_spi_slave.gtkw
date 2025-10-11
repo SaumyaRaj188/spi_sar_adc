@@ -1,0 +1,60 @@
+[*]
+[*] GTKWave Analyzer v3.4.0 (w)1999-2022 BSI
+[*] Sat Oct 11 09:37:28 2025
+[*]
+[dumpfile] "/home/kyouma-hououin/Documents/VLSI/verilog/adc_controller/iverilog/wave_files/tb_adc_spi_slave.vcd"
+[dumpfile_mtime] "Sat Oct 11 09:32:43 2025"
+[dumpfile_size] 76777
+[savefile] "/home/kyouma-hououin/Documents/VLSI/verilog/adc_controller/iverilog/signals/adc_spi_slave.gtkw"
+[timestart] 1504900
+[size] 1534 831
+[pos] 65 31
+*-16.000000 1657200 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+[markername] AA
+[markername] BB
+[markername] CC
+[markername] DD
+[markername] EE
+[markername] FF
+[markername] GG
+[markername] HH
+[markername] II
+[markername] JJ
+[markername] KK
+[markername] LL
+[markername] MM
+[markername] NN
+[markername] OO
+[markername] PP
+[markername] QQ
+[markername] RR
+[markername] SS
+[markername] TT
+[markername] UU
+[markername] VV
+[markername] WW
+[markername] XX
+[markername] YY
+[markername] ZZ
+[treeopen] tb_adc_spi_slave.
+[sst_width] 278
+[signals_width] 166
+[sst_expanded] 1
+[sst_vpaned_height] 230
+@22
+tb_adc_spi_slave.dut.shift_reg[15:0]
+@28
+tb_adc_spi_slave.dut.state_reg[1:0]
+tb_adc_spi_slave.dut.cs
+tb_adc_spi_slave.dut.miso
+@22
+tb_adc_spi_slave.dut.ctrl_reg[11:0]
+@28
+tb_adc_spi_slave.dut.sck
+tb_adc_spi_slave.dut.clk
+tb_adc_spi_slave.dut.posedge_sck_pulse
+tb_adc_spi_slave.dut.negedge_sck_pulse
+@22
+tb_adc_spi_slave.dut.counter[4:0]
+[pattern_trace] 1
+[pattern_trace] 0

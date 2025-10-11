@@ -34,6 +34,13 @@ Finally, open the generated VCD file with GTKWave:
 gtkwave tb_adc_controller.vcd
 ```
 
+### How to use CocoTB for testing
+Source python environment
+```bash
+source venv/bin/activate
+```
+
+
 
 # SPI Interface
 Type 0
