@@ -34,11 +34,22 @@ Finally, open the generated VCD file with GTKWave:
 gtkwave tb_adc_controller.vcd
 ```
 
-### How to use CocoTB for testing
-Source python environment
+### How to use CocoTB for testing 
+Install cocotb
+```bash
+python3 -m venv venv
+source venv/bin/activate
+pip install cocotb
+deactivate
+```
+
+Before running cocotb, activate the virtual environment
 ```bash
 source venv/bin/activate
 ```
+
+
+Run CocoTB
 
 
 
