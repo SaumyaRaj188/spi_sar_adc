@@ -28,8 +28,10 @@ module adc_controller #(
 
     // Outputs
     output       sample_and_hold, // Control signal for the S&H circuit
-    output       dac_en,     // Enable signal for the external DAC
+    output       pwr_gate,     // Enable signal for the external DAC
+    output       dac_rst,   // Reset for the Capacitive DAC
     output       ack,        // Acknowledgment: high when conversion is done
+    output       busy, // Busy: when not in Idle state
     output [WIDTH-1:0] dac,        // Output value to drive the external DAC
     output [WIDTH-1:0] data        // Final, valid conversion result
 );
@@ -97,8 +99,9 @@ module adc_controller #(
     // -- FSM Process 3: Output Logic (Combinational) --
     assign sample_and_hold = (state == S_INIT);
     assign ack             = (state == S_FINISH);
-    assign dac_en          = (state == S_INIT) || (state == S_CONVERT);
-
+    assign pwr_gate        = (state == S_INIT) || (state == S_CONVERT);
+    assign busy            = (state != S_IDLE);
+    assign dac_rst         = (state == S_INIT);
 
     // ============================================================================
     // DATA PATH LOGIC
