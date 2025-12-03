@@ -45,15 +45,15 @@ else
     echo "⚠️ Warning: VCD file not found. Did the simulation run correctly?"
 fi
 
-# 4. View Waveform
-echo "----------------------------------------"
-echo "Opening GTKWave..."
-echo "----------------------------------------"
+# # 4. View Waveform
+# echo "----------------------------------------"
+# echo "Opening GTKWave..."
+# echo "----------------------------------------"
 
-# Opens the VCD with the saved signal layout (.gtkw) if it exists
-if [ -f "iverilog/signals/adc_spi_slave.gtkw" ]; then
-    gtkwave iverilog/wave_files/tb_spi_adc.vcd iverilog/signals/adc_spi_slave.gtkw &
-else
-    # Fallback if no .gtkw save file exists yet
-    gtkwave iverilog/wave_files/tb_spi_adc.vcd &
-fi
+# # Opens the VCD with the saved signal layout (.gtkw) if it exists
+# if [ -f "iverilog/signals/adc_spi_slave.gtkw" ]; then
+#     gtkwave iverilog/wave_files/tb_spi_adc.vcd iverilog/signals/adc_spi_slave.gtkw &
+# else
+#     # Fallback if no .gtkw save file exists yet
+#     gtkwave iverilog/wave_files/tb_spi_adc.vcd &
+# fi

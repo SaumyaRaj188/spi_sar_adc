@@ -1,5 +1,6 @@
 /*
  * Module: adc_spi_slave
+ * VERSION: FINAL SYNTHESIZABLE
  * Description: SPI Slave Interface matching the README.md register map.
  * Handles Register R/W, EOC latching, and status updates.
  */
@@ -47,13 +48,18 @@ module adc_spi_slave (
     reg [15:0] shift_reg;
     reg [11:0] miso_buffer;
     
-    // SCK Synchronization
+    // -- Synchronizers & Edge Detectors --
     reg sck_s1, sck_s2;
+    reg eoc_s1, eoc_s2; 
+    
     wire sck_rise;
     wire sck_fall;
+    wire adc_eoc_rise; 
 
     assign sck_rise = (sck_s1 && !sck_s2);
     assign sck_fall = (!sck_s1 && sck_s2);
+    // Detect 0->1 transition of the ADC ACK signal to safely latch EOC
+    assign adc_eoc_rise = (eoc_s1 && !eoc_s2); 
 
     // Frame Parsing
     wire [1:0]  cmd;
@@ -74,12 +80,15 @@ module adc_spi_slave (
     assign eoc_flag_out = eoc_latch; 
     assign miso         = cs ? 1'bz : miso_buffer[11];
 
-    // -- SCK Synchronizer --
+    // -- Synchronizers --
     always @(posedge clk or negedge reset_) begin
         if(!reset_) begin
             sck_s1 <= 0; sck_s2 <= 0;
+            eoc_s1 <= 0; eoc_s2 <= 0;
         end else begin
             sck_s1 <= sck; sck_s2 <= sck_s1;
+            // Sync ADC ACK to our clock domain
+            eoc_s1 <= adc_eoc_pulse; eoc_s2 <= eoc_s1;
         end
     end
 
@@ -96,9 +105,12 @@ module adc_spi_slave (
             miso_buffer <= 0;
         end else begin
             
-            // 1. EOC Management
-            if (adc_eoc_pulse) begin
-                eoc_latch <= 1'b1;
+            // 1. EOC Management: 
+            // Priority: Clear on Start (New Job) > Set on Finish (Job Done)
+            if (hw_clear_start) begin
+                eoc_latch <= 1'b0; 
+            end else if (adc_eoc_rise) begin
+                eoc_latch <= 1'b1; 
             end
             
             // 2. Hardware Clear of START bit
@@ -106,26 +118,29 @@ module adc_spi_slave (
                 ctrl_reg[1] <= 1'b0; 
             end
 
+            // 3. Data Latch: Capture data immediately on EOC rise
+            if (adc_eoc_rise) begin
+                data_reg <= adc_data_in;
+            end
+
             case(state)
                 S_IDLE: begin
                     bit_cnt <= 0;
-                    data_reg <= adc_data_in; // Update Live Data
+                    // Continuously update in IDLE, but respect the latch above if busy
+                    if (!adc_eoc_rise) data_reg <= adc_data_in; 
+                    
                     if(!cs) state <= S_SHIFT;
                 end
 
                 S_SHIFT: begin
-                    // Priority Check: CS de-assertion terminates frame
                     if(cs) begin
-                         // OPTIONAL: If we have exactly 16 bits when CS goes high, we could latch.
-                         // But for Mode 0, we usually latch on the last clock edge.
-                         // For safety, we just go to IDLE here.
                          state <= S_IDLE; 
                     end else if(sck_rise) begin
                         // Shift In
                         shift_reg <= {shift_reg[14:0], mosi}; 
                         bit_cnt   <= bit_cnt + 1;
                         
-                        // FIX: Transition to LATCH on the 16th edge (when count is 15 -> 16)
+                        // Transition to LATCH on the 16th edge
                         if (bit_cnt == 15) begin
                             state <= S_LATCH;
                         end
@@ -136,25 +151,8 @@ module adc_spi_slave (
                          miso_buffer <= {miso_buffer[10:0], 1'b0};
                     end
 
-                    // Pre-load MISO buffer logic (after 4 bits)
-                    // We look at bit_cnt == 4 because we just incremented it on rise.
-                    // But we need to load it before the next fall shift.
+                    // Pre-load MISO buffer logic (after 4 bits for CMD/ADDR)
                     if(!cs && bit_cnt == 4 && sck_fall) begin 
-                         // Note: We access shift_reg directly. The 4 bits are at [3:0] of shift_reg
-                         // because we shift left. Wait, shift_reg shifts in at LSB.
-                         // After 4 shifts: [15:4] is old garbage, [3:0] is the new CMD/ADDR.
-                         // Wait, code says `cmd = shift_reg[15:14]`. That implies shift_reg holds result at END.
-                         // During shift, the bits are moving.
-                         // Let's rely on the previous logic which worked for Read.
-                         // Actually, simpler logic: Only load MISO buffer if we are doing a read.
-                         // The previous logic was slightly fragile regarding shift position.
-                         
-                         // Simplified MISO Load:
-                         // We can't easily parse CMD/ADDR mid-stream without complex indexing.
-                         // For this fix, I will focus on the WRITE functionality working first.
-                         // The READ functionality relies on fully received bits.
-                         
-                         // Let's stick to the previous working MISO logic, just adjusted:
                          if (shift_reg[3:2] == CMD_READ) begin 
                            case(shift_reg[1:0])
                                 ADDR_CTRL:   miso_buffer <= ctrl_reg;
@@ -167,11 +165,9 @@ module adc_spi_slave (
                 end
 
                 S_LATCH: begin
-                    // We arrived here because we received 16 bits.
                     state <= S_IDLE; 
                     
                     // Execute Write Commands
-                    // Note: The shift_reg is now fully populated.
                     if (addr == ADDR_CTRL) begin
                         case(cmd)
                             CMD_WRITE: ctrl_reg <= pay;
@@ -180,6 +176,7 @@ module adc_spi_slave (
                         endcase
                     end
                     
+                    // Clear on Read Logic for EOC
                     if (cmd == CMD_READ && addr == ADDR_STATUS) begin
                         eoc_latch <= 1'b0;
                     end

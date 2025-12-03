@@ -51,8 +51,8 @@ module spi_adc #(
     // Example: If Sys=50MHz, 16kHz div=3125, 8kHz div=6250.
     // Toggling happens at half that count.
     
-    localparam DIV_16K = (SYS_CLK_FREQ / 16000) / 2;
-    localparam DIV_8K  = (SYS_CLK_FREQ / 8000) / 2;
+    localparam DIV_16K = ((SYS_CLK_FREQ / 16000) / 2 / 14);
+    localparam DIV_8K  = ((SYS_CLK_FREQ / 8000) / 2 / 14);
     
     reg [31:0] clk_cnt;
     reg        adc_clk_reg;
