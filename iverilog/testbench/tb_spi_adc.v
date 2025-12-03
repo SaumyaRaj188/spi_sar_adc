@@ -36,7 +36,7 @@ module tb_spi_adc;
 
     reg comparator;
     wire [ADC_WIDTH-1:0] dac;
-    wire sample_and_hold, pwr_gate, dac_rst, irq, vref_sel;
+    wire sample_and_hold, pwr_gate, dac_rst, irq, vref_sel, adc_clk_out;
 
     reg [ADC_WIDTH-1:0] analog_volts;
     reg [11:0] spi_rx_data;
@@ -52,7 +52,7 @@ module tb_spi_adc;
         .cs(cs), .sck(sck), .mosi(mosi), .miso(miso),
         .comparator(comparator), .dac(dac),
         .sample_and_hold(sample_and_hold), .pwr_gate(pwr_gate), .dac_rst(dac_rst),
-        .irq(irq), .vref_sel(vref_sel)
+        .irq(irq), .vref_sel(vref_sel), .adc_clk_out(adc_clk_out)
     );
 
     // ========================================================================
@@ -257,7 +257,7 @@ module tb_spi_adc;
         check(shift_in[11:0], 12'h111, "8ksps Data");
 
         // TEST 11: Auto Mode (Polling)
-        test_num=11; $display("\nTEST %0d: Auto Mode", test_num);
+        test_num=11; $display("\nTEST %0d: Auto Mode (NO IRQ)", test_num);
         adc_hard_reset();
         analog_volts = 12'h200;
         spi_write(REG_CTRL, (1<<BIT_ADC_EN)|(1<<BIT_AUTO)|(1<<BIT_CLK_SEL)); 

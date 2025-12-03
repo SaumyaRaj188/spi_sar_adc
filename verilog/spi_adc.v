@@ -28,7 +28,10 @@ module spi_adc #(
     
     // Status/Interrupts
     output irq,            // Active-High Interrupt
-    output vref_sel        // Control wire for external reference (CTRL_REG[3])
+    output vref_sel,        // Control wire for external reference (CTRL_REG[3])
+
+    // ADC Clock
+    output adc_clk_out
 );
 
     // -- Internal Connections --
@@ -155,5 +158,8 @@ module spi_adc #(
         .ctrl_reg_out   (ctrl_reg),
         .eoc_flag_out   (eoc_flag)
     );
+
+    // 6. ADC Clock assignment
+    assign adc_clk_out = adc_clk;
 
 endmodule
