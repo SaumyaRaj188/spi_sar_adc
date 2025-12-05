@@ -8,12 +8,13 @@ volatile uint32_t *GPIO = (volatile uint32_t *)GPIO_BASE;
 #define ADDR_AUTO_1 0x00000404
 #define ADDR_AUTO_2 0x00000408
 #define ADDR_AUTO_3 0x0000040C
+#define ADDR_ABORT  0x00000410 // New Address for Abort Test
 
 // Register Bits
 #define BIT_EN      (1 << 0)
 #define BIT_START   (1 << 1)
 #define BIT_AUTO    (1 << 2)
-#define BIT_CLK_SEL (1 << 6) // 0=8kHz, 1=16kHz
+#define BIT_CLK_SEL (1 << 6) 
 
 #define PIN_SCK  (1 << 0)
 #define PIN_MOSI (1 << 1)
@@ -48,15 +49,12 @@ uint16_t spi_transfer(uint16_t tx_frame) {
     return rx_frame;
 }
 
-// Helper to poll for EOC and read data
 uint16_t get_conversion() {
     uint16_t status;
-    // 1. Poll Status
     while(1) {
         status = spi_transfer(0x1000);
         if(status & 1) break; 
     }
-    // 2. Read Data
     return spi_transfer(0x2000);
 }
 
@@ -64,53 +62,51 @@ int main() {
     volatile int *ram_ptr;
     uint16_t result = 0;
     uint16_t cmd_val = 0;
+    uint16_t status = 0;
 
     // --- PHASE 1: SINGLE SHOT (16 kHz) ---
-    
-    // Config: Enable + 16kHz Clock (Bit 6)
-    // Value = 0x41 (1000001)
     cmd_val = BIT_EN | BIT_CLK_SEL;
-    
-    // Write CTRL (Cmd 01, Addr 00)
     spi_transfer(0x4000 | cmd_val); 
-    
-    // Start Conversion (Set START Bit)
-    // Value = 0x43 (1000011)
     cmd_val |= BIT_START;
     spi_transfer(0x4000 | cmd_val);
     
-    // Get Result
     result = get_conversion();
     ram_ptr = (volatile int *)ADDR_SINGLE;
     *ram_ptr = (result & 0xFFF);
-
     delay(500); 
 
     // --- PHASE 2: AUTO MODE (8 kHz) ---
-
-    // Config: Enable + Auto + 8kHz Clock (Bit 6=0)
-    // Value = 0x7 (0000111) -> En(1) | Start(2) | Auto(4)
     cmd_val = BIT_EN | BIT_START | BIT_AUTO; 
-    
-    // Write CTRL (Overwrite previous settings to clear CLK_SEL)
     spi_transfer(0x4000 | cmd_val);
 
-    // Sample 1
-    result = get_conversion();
-    ram_ptr = (volatile int *)ADDR_AUTO_1;
-    *ram_ptr = (result & 0xFFF);
-    delay(500); 
+    for(int i=0; i<3; i++) {
+        result = get_conversion();
+        ram_ptr = (volatile int *)(ADDR_AUTO_1 + (i*4));
+        *ram_ptr = (result & 0xFFF);
+        delay(500); 
+    }
 
-    // Sample 2
-    result = get_conversion();
-    ram_ptr = (volatile int *)ADDR_AUTO_2;
-    *ram_ptr = (result & 0xFFF);
-    delay(500); 
+    // --- PHASE 3: ABORT TEST ---
+    
+    // 1. Ensure Auto Mode is still running (It should be)
+    // 2. ABORT: Write 0 to CTRL (Disable ADC)
+    // Cmd: WRITE(01) Addr: CTRL(00) Data: 0
+    spi_transfer(0x4000);
 
-    // Sample 3
-    result = get_conversion();
-    ram_ptr = (volatile int *)ADDR_AUTO_3;
-    *ram_ptr = (result & 0xFFF);
+    // 3. Verify Busy Flag is CLEARED
+    while(1) {
+        // Read Status
+        status = spi_transfer(0x1000);
+        
+        // Check Bit 1 (BUSY). If it is 0, we successfully aborted.
+        if ((status & 2) == 0) {
+            // Success! Write Magic Number 0xAB07 (ABORT) to memory
+            ram_ptr = (volatile int *)ADDR_ABORT;
+            *ram_ptr = 0xAB07;
+            break;
+        }
+        delay(10);
+    }
 
     while(1);
 }
