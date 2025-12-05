@@ -2,8 +2,7 @@
 .global _start
 
 _start:
-    /* Set Stack Pointer to TOP of 16KB RAM (0x4000) */
-    /* If this is wrong, the CPU crashes immediately on function calls */
+    /* Set Stack Pointer to 16KB (0x4000) to match soc_basic.v */
     li sp, 0x4000 
     
     /* Jump to C code */

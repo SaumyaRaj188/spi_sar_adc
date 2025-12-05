@@ -7,7 +7,7 @@ module soc_basic (
 );
 
     // ----------------------------------------------------------------
-    // 1. Interconnect Wires
+    // 1. Interconnect
     // ----------------------------------------------------------------
     wire        mem_valid;
     wire        mem_ready;
@@ -15,19 +15,22 @@ module soc_basic (
     wire [31:0] mem_wdata;
     wire [3:0]  mem_wstrb;
     reg  [31:0] mem_rdata;
+    
+    // Wire for instruction fetch indication
+    wire        mem_instr;
 
     // ----------------------------------------------------------------
-    // 2. PicoRV32 Core
+    // 2. CPU Instance
     // ----------------------------------------------------------------
     picorv32 #(
-        .PROGADDR_RESET(32'h0000_0000), // Start at address 0
-        .STACKADDR(32'h0000_4000)       // Initial stack pointer
+        .PROGADDR_RESET(32'h0000_0000),
+        .STACKADDR(32'h0000_4000) // 16KB Top
     ) cpu (
         .clk       (clk),
         .resetn    (resetn),
         .trap      (trap),
         .mem_valid (mem_valid),
-        .mem_instr (1'b0), // Unused in this simple config
+        .mem_instr (mem_instr),
         .mem_ready (mem_ready),
         .mem_addr  (mem_addr),
         .mem_wdata (mem_wdata),
@@ -36,40 +39,57 @@ module soc_basic (
     );
 
     // ----------------------------------------------------------------
-    // 3. Memory (16KB RAM)
+    // 3. Memory (Byte-Addressable 16KB)
     // ----------------------------------------------------------------
-    // 16KB = 4096 words of 32-bits
-    reg [31:0] memory [0:4095]; 
+    // 16384 bytes = 16KB. Index is 0 to 16383.
+    reg [7:0] memory [0:16383]; 
+    
+    // FIX: Declare integer outside the initial block
+    integer i;
 
-    // Load the Hex file automatically
     initial begin
+        // Initialize to zero to avoid 'x'
+        for (i=0; i<16384; i=i+1) memory[i] = 8'h00;
+
+        // Load Firmware (Bytes)
         $readmemh("riscv_toolchain/firmware/firmware.hex", memory);
     end
 
-    // Memory Logic
+    // ----------------------------------------------------------------
+    // 4. Memory Controller
+    // ----------------------------------------------------------------
     reg mem_ready_reg;
     
     always @(posedge clk) begin
         if (!resetn) begin
             mem_ready_reg <= 0;
         end else begin
-            // 1. Handshake: Ready goes high 1 cycle after Valid
+            // Handshake
             mem_ready_reg <= mem_valid && !mem_ready_reg;
 
-            // 2. Read/Write Logic
             if (mem_valid && !mem_ready_reg) begin
                 
-                // WRITE: Only if write strobe is active
+                // --- WRITE (Little Endian) ---
                 if (|mem_wstrb) begin
-                    // Word-aligned write (Simplified for test)
-                    memory[mem_addr >> 2] <= mem_wdata;
+                    if (mem_wstrb[0]) memory[mem_addr + 0] <= mem_wdata[7:0];
+                    if (mem_wstrb[1]) memory[mem_addr + 1] <= mem_wdata[15:8];
+                    if (mem_wstrb[2]) memory[mem_addr + 2] <= mem_wdata[23:16];
+                    if (mem_wstrb[3]) memory[mem_addr + 3] <= mem_wdata[31:24];
                     
-                    // DEBUG: Print to console so we can see it happen
-                    $display("[RAM] Write at 0x%h = Value %d (0x%h)", mem_addr, mem_wdata, mem_wdata);
+                    // Debug output
+                    if (mem_addr == 32'h400) begin
+                         $display("[RAM] Write at 0x400 detected! Data: %d", mem_wdata);
+                    end
                 end 
                 
-                // READ: Always read the address (Standard RAM behavior)
-                mem_rdata <= memory[mem_addr >> 2];
+                // --- READ (Little Endian) ---
+                // Combine 4 bytes into 1 word
+                mem_rdata <= { 
+                    memory[mem_addr + 3], 
+                    memory[mem_addr + 2], 
+                    memory[mem_addr + 1], 
+                    memory[mem_addr + 0] 
+                };
             end
         end
     end

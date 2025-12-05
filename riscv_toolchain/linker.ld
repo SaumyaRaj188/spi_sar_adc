@@ -3,13 +3,21 @@ ENTRY(_start)
 
 MEMORY
 {
-    /* Must match the RAM size in your Verilog (0 to 0x3FFF) */
+    /* LENGTH = 16K to match soc_basic.v */
     RAM (rwx) : ORIGIN = 0x00000000, LENGTH = 16K
 }
 
 SECTIONS
 {
-    .text : { *(.text) } > RAM
-    .data : { *(.data) } > RAM
-    .bss  : { *(.bss)  } > RAM
+    .text : {
+        *(.text)           /* Code */
+    } > RAM
+
+    .data : {
+        *(.data)           /* Initialized Variables */
+    } > RAM
+
+    .bss : {
+        *(.bss)            /* Zero-filled Variables */
+    } > RAM
 }
