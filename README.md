@@ -146,29 +146,3 @@ Of course. Here is the complete pinout for the final, synchronous `spi_controlle
 The pins are categorized into System, SPI Interface, Control Outputs, and Data/Status Inputs, matching the Verilog module definition.
 
 ***
-### ## `spi_controller` Pinout
-
-| Pin Name | Type | Function |
-| :--- | :--- | :--- |
-| **System Signals** |
-| `clk` | Input | **Main System Clock**. Drives the internal FSM and logic. |
-| `reset_n` | Input | **Active-Low Reset**. Asynchronously resets the entire module. |
-| **External SPI Bus** |
-| `spi_sclk` | Input | **Serial Clock** from the SPI master. |
-| `spi_cs` | Input | **Chip Select** (Active Low). Enables the SPI interface. |
-| `spi_mosi` | Input | **Master Out, Slave In**. Receives data from the master. |
-| `spi_miso` | Output | **Master In, Slave Out**. Sends data back to the master. |
-| **Control Outputs** |
-| `adc_en_o` | Output | `CTRL_REG[0]`: ADC Enable signal to the ADC core. |
-| `start_conv_o`| Output | `CTRL_REG[1]`: Start Conversion signal. |
-| `auto_mode_o` | Output | `CTRL_REG[2]`: Auto/Manual Mode select signal. |
-| `vref_sel_o` | Output | `CTRL_REG[3]`: Voltage Reference select signal. |
-| `int_en_o` | Output | `CTRL_REG[4]`: Interrupt Enable signal. |
-| `start_cal_o` | Output | `CTRL_REG[5]`: Start Calibration signal. |
-| `clk_sel_o` | Output | `CTRL_REG[6]`: Clock Select (8kHz/16kHz) signal. |
-| **Data/Status Inputs** |
-| `adc_data_i` | Input [11:0] | The 12-bit conversion result from the ADC core. |
-| `cal_offset_i`| Input [11:0] | The 12-bit calibration result from the ADC core. |
-| `eoc_i` | Input | **End of Conversion** flag from the ADC core. |
-| `busy_i` | Input | **Busy** flag from the ADC core. |
-| `vref_rdy_i` | Input | **Voltage Reference Ready** flag from the ADC core. |

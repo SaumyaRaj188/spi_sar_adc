@@ -268,9 +268,9 @@ module tb_spi_adc;
         
         analog_volts = 12'h999;
         
-        // // Flush Stale Result
-        // eoc_found=0; while(!eoc_found) begin spi_read(REG_STATUS); #200; if(shift_in[0]) eoc_found=1; end
-        // spi_read(REG_DATA); 
+        // Flush Stale Result
+        eoc_found=0; while(!eoc_found) begin spi_read(REG_STATUS); #200; if(shift_in[0]) eoc_found=1; end
+        spi_read(REG_DATA); 
         
         // Get New Result
         eoc_found=0; while(!eoc_found) begin spi_read(REG_STATUS); #200; if(shift_in[0]) eoc_found=1; end
