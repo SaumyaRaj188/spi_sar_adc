@@ -50,12 +50,14 @@ module spi_adc #(
     wire bit_clk_sel = ctrl_reg[6]; // CLK_SEL (0=8k, 1=16k)
 
     // -- 1. Clock Generation Logic --
+    // Calculate total cycles per conversion (e.g., 12 + 2 = 14)
+    localparam CYCLES_PER_SAMPLE = ADC_WIDTH + 2;
+
     // We derive adc_clk from sys_clk. 
     // Example: If Sys=50MHz, 16kHz div=3125, 8kHz div=6250.
     // Toggling happens at half that count.
-    
-    localparam DIV_16K = ((SYS_CLK_FREQ / 16000) / 2 / 14);
-    localparam DIV_8K  = ((SYS_CLK_FREQ / 8000) / 2 / 14);
+    localparam DIV_16K = ((SYS_CLK_FREQ / 16000) / 2 / CYCLES_PER_SAMPLE);
+    localparam DIV_8K  = ((SYS_CLK_FREQ / 8000) / 2 / CYCLES_PER_SAMPLE);
     
     reg [31:0] clk_cnt;
     reg        adc_clk_reg;
