@@ -1,0 +1,44 @@
+133. Printing statistics.
+
+=== spi_adc ===
+
+   Number of wires:                560
+   Number of wire bits:            732
+   Number of public wires:          43
+   Number of public wire bits:     171
+   Number of ports:                 14
+   Number of port bits:             25
+   Number of memories:               0
+   Number of memory bits:            0
+   Number of processes:              0
+   Number of cells:                716
+     $_ANDNOT_                     178
+     $_AND_                         21
+     $_DFFE_PN0P_                   87
+     $_DFF_PN0_                     50
+     $_DFF_PN1_                      1
+     $_MUX_                        137
+     $_NAND_                        36
+     $_NOR_                         43
+     $_NOT_                         21
+     $_ORNOT_                       21
+     $_OR_                          82
+     $_TBUF_                         1
+     $_XNOR_                        19
+     $_XOR_                         19
+
+   Area for cell type $_NOT_ is unknown!
+   Area for cell type $_AND_ is unknown!
+   Area for cell type $_NAND_ is unknown!
+   Area for cell type $_OR_ is unknown!
+   Area for cell type $_NOR_ is unknown!
+   Area for cell type $_XOR_ is unknown!
+   Area for cell type $_XNOR_ is unknown!
+   Area for cell type $_ANDNOT_ is unknown!
+   Area for cell type $_ORNOT_ is unknown!
+   Area for cell type $_MUX_ is unknown!
+   Area for cell type $_TBUF_ is unknown!
+   Area for cell type $_DFF_PN0_ is unknown!
+   Area for cell type $_DFF_PN1_ is unknown!
+   Area for cell type $_DFFE_PN0P_ is unknown!
+

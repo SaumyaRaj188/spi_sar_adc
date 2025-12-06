@@ -1,0 +1,108 @@
+Reading timing models for corner nom_tt_025C_1v80…
+Reading timing library for the 'nom_tt_025C_1v80' corner at '/home/kyouma-hououin/pdk/ciel/sky130/versions/0fe599b2afb6708d281543108caf8310912f54af/sky130A/libs.ref/sky130_fd_sc_hd/lib/sky130_fd_sc_hd__tt_025C_1v80.lib'…
+Reading timing models for corner nom_ff_n40C_1v95…
+Reading timing library for the 'nom_ff_n40C_1v95' corner at '/home/kyouma-hououin/pdk/ciel/sky130/versions/0fe599b2afb6708d281543108caf8310912f54af/sky130A/libs.ref/sky130_fd_sc_hd/lib/sky130_fd_sc_hd__ff_n40C_1v95.lib'…
+Reading timing models for corner nom_ss_100C_1v60…
+Reading timing library for the 'nom_ss_100C_1v60' corner at '/home/kyouma-hououin/pdk/ciel/sky130/versions/0fe599b2afb6708d281543108caf8310912f54af/sky130A/libs.ref/sky130_fd_sc_hd/lib/sky130_fd_sc_hd__ss_100C_1v60.lib'…
+Reading OpenROAD database at '/home/kyouma-hououin/Documents/VLSI/verilog/adc_controller/librelane/runs/RUN_2025-12-06_20-03-52/27-openroad-globalplacement/spi_adc.odb'…
+Reading design constraints file at '/nix/store/j0zxygszwgin6pwkx80mnja2sn8pcc6d-python3-3.11.9-env/lib/python3.11/site-packages/librelane/scripts/base.sdc'…
+[INFO] Using clock sys_clk…
+[INFO] Setting output delay to: 4.0
+[INFO] Setting input delay to: 4.0
+[INFO] Setting load to: 0.033442
+[INFO] Setting clock uncertainty to: 0.25
+[INFO] Setting clock transition to: 0.1499999999999999944488848768742172978818416595458984375
+[INFO] Setting timing derate to: 5%
+[INFO] Setting RC values…
+[INFO RSZ-0027] Inserted 5 input buffers.
+[INFO RSZ-0028] Inserted 18 output buffers.
+[INFO RSZ-0058] Using max wire length 6335um.
+Iteration | Resized | Buffers | Nets repaired | Remaining
+---------------------------------------------------------
+        0 |       0 |       0 |             0 |       492
+       10 |       0 |       0 |             0 |       482
+       20 |       7 |       1 |             1 |       472
+       30 |      17 |       1 |             1 |       462
+       40 |      26 |       1 |             1 |       452
+       50 |      36 |       1 |             1 |       442
+       60 |      45 |       1 |             1 |       432
+       70 |      55 |       1 |             1 |       422
+       80 |      65 |       1 |             1 |       412
+       90 |      75 |       1 |             1 |       402
+      100 |      85 |       1 |             1 |       392
+      110 |      95 |       2 |             2 |       382
+      120 |     105 |       2 |             2 |       372
+      130 |     112 |       2 |             2 |       362
+      140 |     112 |       2 |             2 |       352
+      150 |     119 |       2 |             2 |       342
+      160 |     129 |       2 |             2 |       332
+      170 |     139 |       4 |             4 |       322
+      180 |     149 |       4 |             4 |       312
+      190 |     159 |       4 |             4 |       302
+      200 |     166 |       5 |             5 |       292
+      210 |     167 |       5 |             5 |       282
+      220 |     178 |       7 |             6 |       272
+      230 |     188 |       7 |             6 |       262
+      240 |     198 |       9 |             8 |       252
+      250 |     214 |      16 |            12 |       242
+      260 |     224 |      16 |            12 |       232
+      270 |     234 |      16 |            12 |       222
+      280 |     244 |      16 |            12 |       212
+      290 |     253 |      16 |            12 |       202
+      300 |     264 |      17 |            13 |       192
+      310 |     274 |      17 |            13 |       182
+      320 |     285 |      21 |            14 |       172
+      330 |     285 |      21 |            14 |       162
+      340 |     293 |      21 |            14 |       152
+      350 |     303 |      21 |            14 |       142
+      360 |     312 |      21 |            14 |       132
+      370 |     323 |      23 |            15 |       122
+      380 |     337 |      28 |            16 |       112
+      390 |     347 |      28 |            16 |       102
+      400 |     357 |      28 |            16 |        92
+      410 |     367 |      28 |            16 |        82
+      420 |     376 |      28 |            16 |        72
+      430 |     386 |      28 |            16 |        62
+      440 |     406 |      41 |            18 |        52
+      450 |     406 |      41 |            18 |        42
+      460 |     406 |      41 |            18 |        32
+      470 |     406 |      41 |            18 |        22
+      480 |     406 |      41 |            18 |        12
+      490 |     406 |      41 |            18 |         2
+    final |     406 |      41 |            18 |         0
+---------------------------------------------------------
+[INFO RSZ-0035] Found 18 fanout violations.
+[INFO RSZ-0038] Inserted 41 buffers in 18 nets.
+[INFO RSZ-0039] Resized 406 instances.
+[INFO RSZ-0042] Inserted 24 tie sky130_fd_sc_hd__conb_1 instances.
+Placement Analysis
+---------------------------------
+total displacement       1146.5 u
+average displacement        1.5 u
+max displacement            7.5 u
+original HPWL            9081.5 u
+legalized HPWL           9958.0 u
+delta HPWL                   10 %
+
+[INFO DPL-0020] Mirrored 166 instances
+[INFO DPL-0021] HPWL before            9958.0 u
+[INFO DPL-0022] HPWL after             9644.1 u
+[INFO DPL-0023] HPWL delta               -3.2 %
+[INFO] Setting RC values…
+Setting global connections for newly added cells…
+[INFO] Setting global connections...
+Updating metrics…
+Cell type report:                       Count       Area
+  Fill cell                                86     322.81
+  Tap cell                                180     225.22
+  Buffer                                    2       7.51
+  Timing Repair Buffer                     64     379.11
+  Inverter                                 18      67.56
+  Sequential cell                         138    3465.82
+  Multi-Input combinational cell          281    2250.91
+  Total                                   769    6718.94
+Writing OpenROAD database to '/home/kyouma-hououin/Documents/VLSI/verilog/adc_controller/librelane/runs/RUN_2025-12-06_20-03-52/31-openroad-repairdesignpostgpl/spi_adc.odb'…
+Writing netlist to '/home/kyouma-hououin/Documents/VLSI/verilog/adc_controller/librelane/runs/RUN_2025-12-06_20-03-52/31-openroad-repairdesignpostgpl/spi_adc.nl.v'…
+Writing powered netlist to '/home/kyouma-hououin/Documents/VLSI/verilog/adc_controller/librelane/runs/RUN_2025-12-06_20-03-52/31-openroad-repairdesignpostgpl/spi_adc.pnl.v'…
+Writing layout to '/home/kyouma-hououin/Documents/VLSI/verilog/adc_controller/librelane/runs/RUN_2025-12-06_20-03-52/31-openroad-repairdesignpostgpl/spi_adc.def'…
+Writing timing constraints to '/home/kyouma-hououin/Documents/VLSI/verilog/adc_controller/librelane/runs/RUN_2025-12-06_20-03-52/31-openroad-repairdesignpostgpl/spi_adc.sdc'…

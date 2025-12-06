@@ -1,0 +1,16 @@
+{
+    "DESIGN_NAME": "spi_adc",
+    "VERILOG_FILES": [
+        "dir::../verilog/spi_adc.v",
+        "dir::../verilog/adc_controller.v",
+        "dir::../verilog/adc_spi_slave.v"
+    ],
+    "CLOCK_PERIOD": 20.0,
+    "CLOCK_PORT": "sys_clk",
+    "CLOCK_NET": "sys_clk",
+    "FP_CORE_UTIL": 45,
+    "PL_TARGET_DENSITY": 0.50,
+    "PDK": "sky130A",
+    "STD_CELL_LIBRARY": "sky130_fd_sc_hd",
+    "FP_PIN_ORDER_CFG": "dir::pin_order.cfg"
+}
