@@ -84,7 +84,7 @@ module tb_soc_adc;
     end
 
     initial begin
-        $dumpfile("soc_adc_test.vcd");
+        $dumpfile("tb_soc_adc.vcd");
         $dumpvars(0, tb_soc_adc);
 
         $display("--- ADC SOC SIMULATION (COMPREHENSIVE) START ---");

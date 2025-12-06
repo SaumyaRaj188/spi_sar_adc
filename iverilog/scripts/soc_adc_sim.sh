@@ -59,8 +59,8 @@ vvp iverilog/sim_files/soc_adc_sim
 
 # 6. Cleanup
 if [ -f "tb_soc_adc.vcd" ]; then
-    mv soc_adc_test.vcd iverilog/wave_files/
-    echo "✅ Waveform saved to: iverilog/wave_files/soc_adc_test.vcd"
+    mv tb_soc_adc.vcd iverilog/wave_files/
+    echo "✅ Waveform saved to: iverilog/wave_files/tb_soc_adc.vcd"
 else
     echo "⚠️ Warning: No VCD file generated."
 fi
