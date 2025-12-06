@@ -45,29 +45,29 @@ module tb_soc_adc;
             // Normal Value Checks
             else if (uut.mem_wdata >= expected_val - 2 && uut.mem_wdata <= expected_val + 2) begin
                 
-                if (test_phase == 0) $display("✅ SINGLE SHOT (16kHz) PASSED! (Got %d)", uut.mem_wdata);
-                else                 $display("✅ AUTO SAMPLE %0d (8kHz) PASSED! (Got %d)", test_phase, uut.mem_wdata);
+                if (test_phase == 0) $display("✅ SINGLE SHOT (16kHz) PASSED! (Got %d) (Expected %d) \n", uut.mem_wdata, expected_val);
+                else                 $display("✅ AUTO SAMPLE %0d (8kHz) PASSED! (Got %d) (Expected %d) \n", test_phase, uut.mem_wdata, expected_val);
 
                 test_phase = test_phase + 1;
 
                 case(test_phase)
                     1: begin
-                        analog_input     = 12'd1000;
-                        expected_val     = 12'd1000;
+                        analog_input     = 12'd1543;
+                        expected_val     = 12'd1543;
                         next_target_addr = 32'h404;
-                        $display("-> Changing Input to 1000 for Auto Mode (8kHz)...");
+                        $display("-> Changing Input to 1543 for Auto Mode (8kHz)...");
                     end
                     2: begin
-                        analog_input     = 12'd2000;
-                        expected_val     = 12'd2000;
+                        analog_input     = 12'd2654;
+                        expected_val     = 12'd2654;
                         next_target_addr = 32'h408;
-                        $display("-> Changing Input to 2000...");
+                        $display("-> Changing Input to 2654...");
                     end
                     3: begin
-                        analog_input     = 12'd3000;
-                        expected_val     = 12'd3000;
+                        analog_input     = 12'd3129;
+                        expected_val     = 12'd3129;
                         next_target_addr = 32'h40C;
-                        $display("-> Changing Input to 3000...");
+                        $display("-> Changing Input to 3129...");
                     end
                     4: begin
                         // Setup for Abort Test
@@ -87,11 +87,11 @@ module tb_soc_adc;
         $dumpfile("tb_soc_adc.vcd");
         $dumpvars(0, tb_soc_adc);
 
-        $display("--- ADC SOC SIMULATION (COMPREHENSIVE) START ---");
+        $display("\n --- ADC SOC SIMULATION (COMPREHENSIVE) START --- \n");
         
         test_phase = 0;
-        analog_input = 12'd2500;
-        expected_val = 12'd2500;
+        analog_input = 12'd2567;
+        expected_val = 12'd2567;
         next_target_addr = 32'h400;
 
         resetn = 0;
