@@ -1,58 +1,3 @@
-## ADC Controller Simulation
-
-### How to Compile and View with `iverilog` and `gtkwave`
-
-Follow these steps on a Linux command line (or a similar environment like WSL on Windows).
-
-**Prerequisites:** You have Icarus Verilog (`iverilog`) and GTKWave (`gtkwave`) installed.
-
-**Step 1: Save the Files**
-Save all three Verilog files in the same directory:
-* `adc_alu.v`
-* `adc_controller.v`
-* `tb_adc_controller.v`
-
-**Step 2: Compile the Simulation**
-Open your terminal in that directory and run this command. This tells `iverilog` to compile all three source files into a single executable simulation file named `adc_sim`.
-
-```bash
-iverilog -o adc_sim tb_adc_controller.v adc_controller.v adc_alu.v
-```
-
-**Step 3: Run the Simulation**
-Now, run the compiled file. This will execute the testbench, print the `$display` messages to your terminal, and create the waveform file `tb_adc_controller.vcd`.
-
-```bash
-vvp adc_sim
-```
-
-
-**Step 4: View the Waveform in GTKWave**
-Finally, open the generated VCD file with GTKWave:
-
-```bash
-gtkwave tb_adc_controller.vcd
-```
-
-### How to use CocoTB for testing 
-Install cocotb
-```bash
-python3 -m venv venv
-source venv/bin/activate
-pip install cocotb
-deactivate
-```
-
-Before running cocotb, activate the virtual environment
-```bash
-source venv/bin/activate
-```
-
-
-Run CocoTB
-
-
-
 # SPI Interface
 Type 0
 
@@ -66,7 +11,7 @@ Type 0
 | `0b11`  | `INFO_REG`  | R   | Stores the offset from the calibration.   |
 
 
-### `0b00` CTRL\_REG (Control Register)
+### `0b00` CTRL\_REG (ADC Control Register)
 
 | Bit(s)   | Name       | Function                                            |
 | :------- | :--------- | :-------------------------------------------------- |
@@ -78,7 +23,7 @@ Type 0
 | **6** | `CLK_SEL`  | `0` = 8 kHz, `1` = 16 kHz                           |
 | **[11:7]** | `-`        | Reserved (Read as `0`)                              |
 
-### `0b01` STATUS\_REG (Status & Info Register)
+### `0b01` STATUS\_REG (ADC Status Register)
 
 | Bit(s)   | Name       | Function                                                       |
 | :------- | :--------- | :------------------------------------------------------------- |
@@ -86,13 +31,13 @@ Type 0
 | **1** | `BUSY`     | `1` when a conversion or calibration is in progress.           |
 | **[11:2]** | `-`        | Reserved (Read as `0`).                            |
 
-### `0b10` DATA\_REG (Data Register)
+### `0b10` DATA\_REG (ADC Data Register)
 
 | Bit(s)   | Name       | Function                          |
 | :------- | :--------- | :-------------------------------- |
 | **[11:0]** | `ADC_DATA` | The 12-bit conversion result.     |
 
-### `0b11` INFO\_REG (Calibration Offset Register)
+### `0b11` INFO\_REG (Chip Info Register)
 
 | Bit(s)   | Name         | Function                                     |
 | :------- | :----------- | :------------------------------------------- |
@@ -140,9 +85,5 @@ Type 0
     * **Full 16-bit frame:** `0001 0000 0000 0000` = **`16'h1000`**
     * **Full 16-bit miso frame:** `0000 ___ ___ ___` = **`16'h0___`**
 
-
-Of course. Here is the complete pinout for the final, synchronous `spi_controller` module we designed.
-
-The pins are categorized into System, SPI Interface, Control Outputs, and Data/Status Inputs, matching the Verilog module definition.
 
 ***
