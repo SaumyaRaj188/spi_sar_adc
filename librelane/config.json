@@ -1,9 +1,9 @@
 {
     "DESIGN_NAME": "spi_adc",
     "VERILOG_FILES": [
-        "dir::../verilog/spi_adc.v",
-        "dir::../verilog/adc_controller.v",
-        "dir::../verilog/adc_spi_slave.v"
+        "dir::../verilog/adc/spi_adc.v",
+        "dir::../verilog/adc/adc_controller.v",
+        "dir::../verilog/adc/adc_spi_slave.v"
     ],
     "CLOCK_PERIOD": 20.0,
     "CLOCK_PORT": "sys_clk",
