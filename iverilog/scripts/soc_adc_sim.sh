@@ -38,12 +38,12 @@ echo "----------------------------------------"
 # We list ALL necessary files here
 iverilog -o iverilog/sim_files/soc_adc_sim \
     iverilog/testbench/tb_soc_adc.v \
-    verilog/soc_adc.v \
-    verilog/gpio_bridge.v \
-    verilog/picorv32.v \
-    verilog/spi_adc.v \
-    verilog/adc_controller.v \
-    verilog/adc_spi_slave.v
+    verilog/rv32/soc_adc.v \
+    verilog/rv32/gpio_bridge.v \
+    verilog/rv32/picorv32.v \
+    verilog/adc/spi_adc.v \
+    verilog/adc/adc_controller.v \
+    verilog/adc/adc_spi_slave.v
 
 if [ $? -ne 0 ]; then
     echo "❌ Verilog Compilation Failed."

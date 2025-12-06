@@ -15,11 +15,11 @@ echo "----------------------------------------"
 echo "Compiling Verilog Sources..."
 echo "----------------------------------------"
 
-iverilog -o iverilog/sim_files/spi_sim \
+iverilog -o iverilog/sim_files/spi_adc_sim \
     iverilog/testbench/tb_spi_adc.v \
-    verilog/spi_adc.v \
-    verilog/adc_controller.v \
-    verilog/adc_spi_slave.v
+    verilog/adc/spi_adc.v \
+    verilog/adc/adc_controller.v \
+    verilog/adc/adc_spi_slave.v
 
 # Check if compilation succeeded
 if [ $? -ne 0 ]; then
@@ -35,7 +35,7 @@ echo "Running Simulation..."
 echo "----------------------------------------"
 
 # Run vvp. This generates the .vcd file in the current folder (as defined in the TB)
-vvp iverilog/sim_files/spi_sim
+vvp iverilog/sim_files/spi_adc_sim
 
 # Move the VCD to the dedicated wave_files directory
 if [ -f "tb_spi_adc.vcd" ]; then

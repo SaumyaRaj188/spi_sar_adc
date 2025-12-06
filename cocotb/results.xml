@@ -1,8 +1,0 @@
-<testsuites name="results">
-  <testsuite name="all" package="all">
-    <property name="random_seed" value="1760198862" />
-    <testcase name="run_all_tests" classname="test_adc_spi_slave" file="/home/kyouma-hououin/Documents/VLSI/verilog/adc_controller/cocotb/test_adc_spi_slave.py" lineno="59" time="0.008337974548339844" sim_time_ns="210.0" ratio_time="25185.97277822258">
-      <failure error_type="AttributeError" error_msg="'Logic' object has no attribute 'integer'" />
-    </testcase>
-  </testsuite>
-</testsuites>
