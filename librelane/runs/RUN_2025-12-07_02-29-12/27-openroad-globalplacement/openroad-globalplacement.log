@@ -1,0 +1,137 @@
+Reading OpenROAD database at '/home/kyouma-hououin/Documents/VLSI/designs/spi_sar_adc/librelane/runs/RUN_2025-12-07_02-29-12/25-odb-customioplacement/spi_adc.odb'…
+Reading library file at '/home/kyouma-hououin/pdk/ciel/sky130/versions/0fe599b2afb6708d281543108caf8310912f54af/sky130A/libs.ref/sky130_fd_sc_hd/lib/sky130_fd_sc_hd__tt_025C_1v80.lib'…
+Reading design constraints file at '/nix/store/j0zxygszwgin6pwkx80mnja2sn8pcc6d-python3-3.11.9-env/lib/python3.11/site-packages/librelane/scripts/base.sdc'…
+[INFO] Using clock sys_clk…
+[INFO] Setting output delay to: 4.0
+[INFO] Setting input delay to: 4.0
+[INFO] Setting load to: 0.033442
+[INFO] Setting clock uncertainty to: 0.25
+[INFO] Setting clock transition to: 0.1499999999999999944488848768742172978818416595458984375
+[INFO] Setting timing derate to: 5%
+[INFO] Setting RC values…
+[INFO] Setting signal min routing layer to: met1 and clock min routing layer to met1. 
+[INFO] Setting signal max routing layer to: met5 and clock max routing layer to met5. 
++ global_placement -density 0.5 -timing_driven -routability_driven -pad_right 0 -pad_left 0 -init_wirelength_coef 0.25
+[INFO GPL-0002] DBU: 1000
+[INFO GPL-0003] SiteSize: (  0.460  2.720 ) um
+[INFO GPL-0004] CoreBBox: (  5.520 10.880 ) ( 122.820 127.840 ) um
+[INFO GPL-0006] NumInstances:               705
+[INFO GPL-0007] NumPlaceInstances:          439
+[INFO GPL-0008] NumFixedInstances:          266
+[INFO GPL-0009] NumDummyInstances:            0
+[INFO GPL-0010] NumNets:                    445
+[INFO GPL-0011] NumPins:                   1717
+[INFO GPL-0012] DieBBox:  (  0.000  0.000 ) ( 128.465 139.185 ) um
+[INFO GPL-0013] CoreBBox: (  5.520 10.880 ) ( 122.820 127.840 ) um
+[INFO GPL-0016] CoreArea:             13719.408 um^2
+[INFO GPL-0017] NonPlaceInstsArea:      548.026 um^2
+[INFO GPL-0018] PlaceInstsArea:        6204.701 um^2
+[INFO GPL-0019] Util:                    47.107 %
+[INFO GPL-0020] StdInstsArea:          6204.701 um^2
+[INFO GPL-0021] MacroInstsArea:           0.000 um^2
+[InitialPlace]  Iter: 1 CG residual: 0.00000008 HPWL: 12489243
+[InitialPlace]  Iter: 2 CG residual: 0.00000012 HPWL: 6778654
+[InitialPlace]  Iter: 3 CG residual: 0.00000012 HPWL: 6566914
+[InitialPlace]  Iter: 4 CG residual: 0.00000011 HPWL: 6422139
+[InitialPlace]  Iter: 5 CG residual: 0.00000010 HPWL: 6359333
+[INFO GPL-0031] FillerInit:NumGCells:       466
+[INFO GPL-0032] FillerInit:NumGNets:        445
+[INFO GPL-0033] FillerInit:NumGPins:       1717
+[INFO GPL-0023] TargetDensity:            0.500
+[INFO GPL-0024] AvrgPlaceInstArea:       14.134 um^2
+[INFO GPL-0025] IdealBinArea:            28.267 um^2
+[INFO GPL-0026] IdealBinCnt:                485
+[INFO GPL-0027] TotalBinArea:         13719.408 um^2
+[INFO GPL-0028] BinCnt:        16     16
+[INFO GPL-0029] BinSize: (  7.332  7.310 )
+[INFO GPL-0030] NumBins: 256
+[NesterovSolve] Iter:    1 overflow: 0.953 HPWL: 3037586
+[NesterovSolve] Iter:   10 overflow: 0.908 HPWL: 3740292
+[NesterovSolve] Iter:   20 overflow: 0.901 HPWL: 3775697
+[NesterovSolve] Iter:   30 overflow: 0.893 HPWL: 3815290
+[NesterovSolve] Iter:   40 overflow: 0.888 HPWL: 3830002
+[NesterovSolve] Iter:   50 overflow: 0.883 HPWL: 3831121
+[NesterovSolve] Iter:   60 overflow: 0.880 HPWL: 3828888
+[NesterovSolve] Iter:   70 overflow: 0.880 HPWL: 3820509
+[NesterovSolve] Iter:   80 overflow: 0.880 HPWL: 3811128
+[NesterovSolve] Iter:   90 overflow: 0.880 HPWL: 3813497
+[NesterovSolve] Iter:  100 overflow: 0.880 HPWL: 3817418
+[NesterovSolve] Iter:  110 overflow: 0.879 HPWL: 3819212
+[NesterovSolve] Iter:  120 overflow: 0.877 HPWL: 3824502
+[NesterovSolve] Iter:  130 overflow: 0.876 HPWL: 3841314
+[NesterovSolve] Iter:  140 overflow: 0.874 HPWL: 3878242
+[NesterovSolve] Iter:  150 overflow: 0.868 HPWL: 3931925
+[NesterovSolve] Iter:  160 overflow: 0.851 HPWL: 4009843
+[NesterovSolve] Iter:  170 overflow: 0.834 HPWL: 4097640
+[NesterovSolve] Iter:  180 overflow: 0.821 HPWL: 4223190
+[NesterovSolve] Iter:  190 overflow: 0.792 HPWL: 4349939
+[INFO GPL-0100] Timing-driven: executing resizer for reweighting nets.
+[INFO GPL-0101] Timing-driven: worst slack 1.14e-08
+[INFO GPL-0103] Timing-driven: weighted 41 nets.
+[NesterovSolve] Iter:  200 overflow: 0.768 HPWL: 4547334
+[NesterovSolve] Iter:  210 overflow: 0.741 HPWL: 4729462
+[NesterovSolve] Iter:  220 overflow: 0.721 HPWL: 4879251
+[NesterovSolve] Iter:  230 overflow: 0.676 HPWL: 5064050
+[NesterovSolve] Iter:  240 overflow: 0.667 HPWL: 5261647
+[INFO GPL-0100] Timing-driven: executing resizer for reweighting nets.
+[INFO GPL-0101] Timing-driven: worst slack 1.14e-08
+[INFO GPL-0103] Timing-driven: weighted 41 nets.
+[NesterovSolve] Iter:  250 overflow: 0.617 HPWL: 5474942
+[NesterovSolve] Snapshot saved at iter = 255
+[NesterovSolve] Iter:  260 overflow: 0.583 HPWL: 5708818
+[NesterovSolve] Iter:  270 overflow: 0.541 HPWL: 5921982
+[NesterovSolve] Iter:  280 overflow: 0.502 HPWL: 6169878
+[INFO GPL-0100] Timing-driven: executing resizer for reweighting nets.
+[INFO GPL-0101] Timing-driven: worst slack 1.14e-08
+[INFO GPL-0103] Timing-driven: weighted 40 nets.
+[NesterovSolve] Iter:  290 overflow: 0.456 HPWL: 6315406
+[NesterovSolve] Iter:  300 overflow: 0.399 HPWL: 6438994
+[NesterovSolve] Iter:  310 overflow: 0.345 HPWL: 6637678
+[NesterovSolve] Iter:  320 overflow: 0.317 HPWL: 6655965
+[INFO GPL-0075] Routability numCall: 1 inflationIterCnt: 1 bloatIterCnt: 0
+[INFO GPL-0036] TileBBox: (    0    0 ) ( 6900 6900 ) DBU
+[INFO GPL-0038] TileCnt:      18   20
+[INFO GPL-0040] NumTiles: 360
+[INFO GPL-0081] TotalRouteOverflow: 0
+[INFO GPL-0082] OverflowTileCnt: 0
+[INFO GPL-0083] 0.5%RC: 0.7781665921211243
+[INFO GPL-0084] 1.0%RC: 0.7541647553443909
+[INFO GPL-0085] 2.0%RC: 0.7269613072276115
+[INFO GPL-0086] 5.0%RC: 0.6959931486182742
+[INFO GPL-0087] FinalRC: 0.7661657
+[INFO GPL-0077] FinalRC lower than targetRC(1.01), routability not needed.
+[NesterovSolve] Iter:  330 overflow: 0.286 HPWL: 6681291
+[INFO GPL-0100] Timing-driven: executing resizer for reweighting nets.
+[INFO GPL-0101] Timing-driven: worst slack 1.14e-08
+[INFO GPL-0103] Timing-driven: weighted 40 nets.
+[NesterovSolve] Iter:  340 overflow: 0.247 HPWL: 6712844
+[NesterovSolve] Iter:  350 overflow: 0.222 HPWL: 6769003
+[INFO GPL-0100] Timing-driven: executing resizer for reweighting nets.
+[INFO GPL-0101] Timing-driven: worst slack 1.14e-08
+[INFO GPL-0103] Timing-driven: weighted 40 nets.
+[NesterovSolve] Iter:  360 overflow: 0.187 HPWL: 6859812
+[NesterovSolve] Iter:  370 overflow: 0.165 HPWL: 6954058
+[INFO GPL-0100] Timing-driven: executing resizer for reweighting nets.
+[INFO GPL-0101] Timing-driven: worst slack 1.14e-08
+[INFO GPL-0103] Timing-driven: weighted 40 nets.
+[NesterovSolve] Iter:  380 overflow: 0.140 HPWL: 7010050
+[NesterovSolve] Iter:  390 overflow: 0.123 HPWL: 7053395
+[NesterovSolve] Iter:  400 overflow: 0.100 HPWL: 7067365
+[NesterovSolve] Finished with Overflow: 0.098639
+[INFO] Setting RC values…
+Setting global connections for newly added cells…
+[INFO] Setting global connections...
+Updating metrics…
+Cell type report:                       Count       Area
+  Fill cell                                86     322.81
+  Tap cell                                180     225.22
+  Buffer                                    2       8.76
+  Inverter                                 18      67.56
+  Sequential cell                         138    3625.98
+  Multi-Input combinational cell          281    2502.40
+  Total                                   705    6752.73
+Writing OpenROAD database to '/home/kyouma-hououin/Documents/VLSI/designs/spi_sar_adc/librelane/runs/RUN_2025-12-07_02-29-12/27-openroad-globalplacement/spi_adc.odb'…
+Writing netlist to '/home/kyouma-hououin/Documents/VLSI/designs/spi_sar_adc/librelane/runs/RUN_2025-12-07_02-29-12/27-openroad-globalplacement/spi_adc.nl.v'…
+Writing powered netlist to '/home/kyouma-hououin/Documents/VLSI/designs/spi_sar_adc/librelane/runs/RUN_2025-12-07_02-29-12/27-openroad-globalplacement/spi_adc.pnl.v'…
+Writing layout to '/home/kyouma-hououin/Documents/VLSI/designs/spi_sar_adc/librelane/runs/RUN_2025-12-07_02-29-12/27-openroad-globalplacement/spi_adc.def'…
+Writing timing constraints to '/home/kyouma-hououin/Documents/VLSI/designs/spi_sar_adc/librelane/runs/RUN_2025-12-07_02-29-12/27-openroad-globalplacement/spi_adc.sdc'…

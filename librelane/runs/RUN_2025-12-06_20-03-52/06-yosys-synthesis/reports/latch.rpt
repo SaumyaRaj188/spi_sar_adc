@@ -1,3 +1,0 @@
-
-17. Executing PROC_DLATCH pass (convert process syncs to latches).
-No latch inferred for signal `$paramod\adc_controller\WIDTH=s32'00000000000000000000000000001100.\next_state' from process `$paramod\adc_controller\WIDTH=s32'00000000000000000000000000001100.$proc$/home/kyouma-hououin/Documents/VLSI/verilog/adc_controller/verilog/adc_controller.v:72$53'.
