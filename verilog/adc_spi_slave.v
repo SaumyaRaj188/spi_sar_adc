@@ -1,9 +1,9 @@
 /*
  * Module: adc_spi_slave
- * VERSION: FINAL (Dual-Clear Logic)
+ * VERSION: FINAL (Dual-Clear + Priority Fix)
  * Description: SPI Slave Interface.
- * - EOC clears if Master reads DATA register.
- * - EOC clears if Master reads STATUS register AND sees the EOC bit set.
+ * - EOC Set: When ADC finishes.
+ * - EOC Clear: When HW Starts, OR Data Read, OR Status Read (Verified).
  */
 module adc_spi_slave (
     input           clk,
@@ -45,7 +45,7 @@ module adc_spi_slave (
     reg [11:0] miso_buffer;
     
     // Internal flag to track what we sent to the Master
-    reg        eoc_sending;
+    reg        eoc_sent_high;
 
     // -- Edge Detectors --
     reg sck_s1, sck_s2;
@@ -78,6 +78,7 @@ module adc_spi_slave (
         end
     end
 
+    // -- Main State Machine & Logic --
     always @(posedge clk or negedge reset_) begin
         if(!reset_) begin
             state       <= S_IDLE;
@@ -88,20 +89,39 @@ module adc_spi_slave (
             bit_cnt     <= 0;
             shift_reg   <= 0;
             miso_buffer <= 0;
-            eoc_sending <= 0;
+            eoc_sent_high <= 0;
         end else begin
             
-            // 1. EOC Set Logic (Priority 2)
-            if (adc_eoc_rise) begin
+            // =========================================================
+            //  EOC LATCH LOGIC (Priority Chain)
+            // =========================================================
+            
+            // Priority 1: Hardware Start (Clears everything for new job)
+            if (hw_clear_start) begin
+                ctrl_reg[1] <= 1'b0; // Clear Start Bit
+                eoc_latch   <= 1'b0; // Clear EOC
+            end
+            
+            // Priority 2: New Result Arrived (Sets EOC)
+            else if (adc_eoc_rise) begin
                 eoc_latch <= 1'b1; 
                 data_reg  <= adc_data_in; 
             end
             
-            // 2. Hardware Clear Start (Priority 1)
-            if (hw_clear_start) begin
-                ctrl_reg[1] <= 1'b0;
-                eoc_latch <= 1'b0; 
+            // Priority 3: SPI Clear Logic (Only happens in LATCH state)
+            else if (state == S_LATCH) begin
+                
+                // Case A: Clear on DATA Read
+                if (cmd == CMD_READ && addr == ADDR_DATA) begin
+                    eoc_latch <= 1'b0;
+                end
+                
+                // Case B: Clear on STATUS Read (If we sent a '1')
+                if (cmd == CMD_READ && addr == ADDR_STATUS) begin
+                    if (eoc_sent_high) eoc_latch <= 1'b0;
+                end
             end
+            // =========================================================
 
             case(state)
                 S_IDLE: begin
@@ -127,8 +147,8 @@ module adc_spi_slave (
                                 ADDR_CTRL:   miso_buffer <= ctrl_reg;
                                 ADDR_STATUS: begin
                                     miso_buffer <= {10'b0, adc_busy_in, eoc_latch};
-                                    // Capture the state we are sending to Master
-                                    eoc_sending <= eoc_latch; 
+                                    // Snapshot EOC state to avoid race condition
+                                    eoc_sent_high <= eoc_latch; 
                                 end
                                 ADDR_DATA:   miso_buffer <= data_reg;
                                 ADDR_INFO:   miso_buffer <= info_reg;
@@ -140,29 +160,22 @@ module adc_spi_slave (
                 S_LATCH: begin
                     state <= S_IDLE; 
                     
-                    // Write Logic
+                    // Write Logic (EOC Clear logic handled in Priority block above)
                     if (addr == ADDR_CTRL) begin
                         case(cmd)
                             CMD_WRITE: ctrl_reg <= pay;
                             CMD_SET:   ctrl_reg <= ctrl_reg | pay;
                             CMD_CLEAR: ctrl_reg <= ctrl_reg & ~pay;
+                            default: ;
                         endcase
                     end
-                    
-                    // --- DUAL CLEAR LOGIC ---
-                    
-                    // 1. Clear if DATA register is read (For Interrupt Mode)
-                    if (cmd == CMD_READ && addr == ADDR_DATA) begin
-                        eoc_latch <= 1'b0;
-                    end
-                    
-                    // 2. Clear if STATUS is read AND we sent a '1' (For Polling Mode)
-                    // This prevents the race condition where we clear a new flag 
-                    // before the master sees it.
-                    if (cmd == CMD_READ && addr == ADDR_STATUS) begin
-                        if (eoc_sending) eoc_latch <= 1'b0;
-                    end
                 end
+
+                default: begin
+                    // Default: stay in idle
+                    state <= S_IDLE; 
+                end
+
             endcase
         end
     end
