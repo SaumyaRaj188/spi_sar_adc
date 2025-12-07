@@ -7,7 +7,7 @@
  * - Generates Interrupts from EOC.
  */
 module spi_adc #(
-    parameter SYS_CLK_FREQ = 50_000_000, // System Clock Frequency (e.g., 50MHz)
+    parameter SYS_CLK_FREQ = 10_000_000, // System Clock Frequency (e.g., 10MHz)
     parameter ADC_WIDTH    = 12
 )(
     input  sys_clk,
@@ -64,17 +64,27 @@ module spi_adc #(
     wire       adc_clk = adc_clk_reg;
     wire [31:0] current_div = bit_clk_sel ? DIV_16K : DIV_8K;
 
+    // -- Clock Gating Logic --
+    // Keep clock running if ADC is BUSY (to allow clean abort/finish)
+    // OR if we are enabled and requesting a start/auto-mode.
+    wire adc_clk_enable = adc_busy || (bit_en && (bit_start || bit_auto));
+
     always @(posedge sys_clk or negedge reset_) begin
         if(!reset_) begin
             clk_cnt <= 0;
             adc_clk_reg <= 0;
-        end else begin
+        end else if (adc_clk_enable) begin
             if (clk_cnt >= current_div - 1) begin
                 clk_cnt <= 0;
                 adc_clk_reg <= ~adc_clk_reg;
             end else begin
                 clk_cnt <= clk_cnt + 1;
             end
+        end else begin
+            // Optional: Reset counters/clock when idle to ensure 
+            // we always start with a clean High/Low phase next time.
+            clk_cnt <= 0;
+            adc_clk_reg <= 0;
         end
     end
 

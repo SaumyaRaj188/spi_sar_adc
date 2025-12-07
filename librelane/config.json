@@ -5,7 +5,7 @@
         "dir::../verilog/adc/adc_controller.v",
         "dir::../verilog/adc/adc_spi_slave.v"
     ],
-    "CLOCK_PERIOD": 20.0,
+    "CLOCK_PERIOD": 100.0,
     "CLOCK_PORT": "sys_clk",
     "CLOCK_NET": "sys_clk",
 
