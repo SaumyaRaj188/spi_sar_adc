@@ -154,7 +154,9 @@ module spi_adc #(
     );
 
     // SPI Slave (Register Interface)
-    adc_spi_slave u_spi (
+    adc_spi_slave #(
+        .WIDTH(ADC_WIDTH)
+    ) u_spi (
         .clk            (sys_clk),
         .reset_         (reset_),
         .cs             (cs),
