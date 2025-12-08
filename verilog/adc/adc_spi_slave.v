@@ -167,6 +167,7 @@ module adc_spi_slave #(
                             CMD_WRITE: ctrl_reg <= pay;
                             CMD_SET:   ctrl_reg <= ctrl_reg | pay;
                             CMD_CLEAR: ctrl_reg <= ctrl_reg & ~pay;
+                            default: ;
                         endcase
                     end
                 end

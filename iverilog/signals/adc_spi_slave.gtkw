@@ -1,0 +1,41 @@
+[*]
+[*] GTKWave Analyzer v3.4.0 (w)1999-2022 BSI
+[*] Mon Dec  8 14:19:39 2025
+[*]
+[dumpfile] "/home/kyouma-hououin/Documents/VLSI/designs/spi_sar_adc/iverilog/wave_files/tb_spi_adc.vcd"
+[dumpfile_mtime] "Mon Dec  8 07:42:58 2025"
+[dumpfile_size] 2541131
+[savefile] "/home/kyouma-hououin/Documents/VLSI/designs/spi_sar_adc/iverilog/signals/adc_spi_slave.gtkw"
+[timestart] 50276000
+[size] 1534 831
+[pos] -1 -1
+*-20.000000 53700000 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+[treeopen] tb_spi_adc.
+[treeopen] tb_spi_adc.u_dut.
+[sst_width] 40
+[signals_width] 174
+[sst_expanded] 0
+[sst_vpaned_height] 230
+@28
+tb_spi_adc.sys_clk
+tb_spi_adc.cs
+tb_spi_adc.sck
+tb_spi_adc.miso
+tb_spi_adc.mosi
+tb_spi_adc.irq
+tb_spi_adc.adc_clk_out
+tb_spi_adc.u_dut.u_controller.state[1:0]
+tb_spi_adc.u_dut.u_controller.sample_and_hold
+tb_spi_adc.u_dut.u_controller.busy
+tb_spi_adc.u_dut.u_controller.ack
+@22
+tb_spi_adc.u_dut.u_controller.test_value[11:0]
+tb_spi_adc.u_dut.u_controller.dac_reg[11:0]
+tb_spi_adc.analog_volts[11:0]
+@28
+tb_spi_adc.u_dut.u_spi.eoc_flag_out
+tb_spi_adc.u_dut.u_spi.hw_clear_start
+@22
+tb_spi_adc.u_dut.u_spi.ctrl_reg[11:0]
+[pattern_trace] 1
+[pattern_trace] 0
