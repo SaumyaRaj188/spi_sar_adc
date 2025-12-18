@@ -59,25 +59,25 @@ The ADC acts as a standard SPI Slave optimized for low-latency access.
 
 ### Packet Structure
 
->| Bit [1:0] | Bit [1:0] | Bit [WIDTH:0] |
->| :--- | :--- | :--- |
->| **Command (CMD)** | **Address (ADDR)** | **Payload / Data** |
+| Bit [1:0] | Bit [1:0] | Bit [WIDTH:0] |
+| :--- | :--- | :--- |
+| **Command (CMD)** | **Address (ADDR)** | **Payload / Data** |
 
 ### Commands
->| CMD | Binary | Operation | Description |
->| :--- | :--- | :--- | :--- |
->| **READ** | `00` | Read Register | Transmits current register value on MISO. Payload is ignored. |
->| **WRITE** | `01` | Write Register | Overwrites register with Payload. |
->| **SET** | `10` | Set Mask | Atomic OR: `Reg <= Reg | Payload`. |
->| **CLEAR** | `11` | Clear Mask | Atomic AND-NOT: `Reg <= Reg & ~Payload`. |
+| CMD | Binary | Operation | Description |
+| :--- | :--- | :--- | :--- |
+| **READ** | `00` | Read Register | Transmits current register value on MISO. Payload is ignored. |
+| **WRITE** | `01` | Write Register | Overwrites register with Payload. |
+| **SET** | `10` | Set Mask | Atomic OR: `Reg <= Reg | Payload`. |
+| **CLEAR** | `11` | Clear Mask | Atomic AND-NOT: `Reg <= Reg & ~Payload`. |
 
 ### Register Map
->| Addr | Name | R/W | Description |
->| :--- | :--- | :--- | :--- |
->| **`00`** | `CTRL_REG` | R/W | **Control Register**.<br>• **Bit 0 (ADC_EN):** 1=Enable, 0=Shutdown.<br>• **Bit 1 (START):** Write 1 to trigger conversion (Self-clearing).<br>• **Bit 2 (AUTO):** 1=Continuous Mode, 0=Single Shot.<br>• **Bit 3 (VREF_SEL):** 0=Internal, 1=External.<br>• **Bit 4 (INT_EN):** 1=Enable hardware IRQ pin.<br>• **Bit 6 (CLK_SEL):** 0=8ksps, 1=16ksps. |
->| **`01`** | `STATUS_REG` | RO | **Status Register**.<br>• **Bit 0 (EOC):** End of Conversion. Cleared automatically on data read.<br>• **Bit 1 (BUSY):** High during conversion. |
->| **`02`** | `DATA_REG` | RO | **Data Register.** Holds the most recent 12-bit conversion result. |
->| **`03`** | `INFO_REG` | RO | **Info Register.** Hardcoded Chip ID (e.g., `0xA`). |
+| Addr | Name | R/W | Description |
+| :--- | :--- | :--- | :--- |
+| **`00`** | `CTRL_REG` | R/W | **Control Register**.<br>• **Bit 0 (ADC_EN):** 1=Enable, 0=Shutdown.<br>• **Bit 1 (START):** Write 1 to trigger conversion (Self-clearing).<br>• **Bit 2 (AUTO):** 1=Continuous Mode, 0=Single Shot.<br>• **Bit 3 (VREF_SEL):** 0=Internal, 1=External.<br>• **Bit 4 (INT_EN):** 1=Enable hardware IRQ pin.<br>• **Bit 6 (CLK_SEL):** 0=8ksps, 1=16ksps. |
+| **`01`** | `STATUS_REG` | RO | **Status Register**.<br>• **Bit 0 (EOC):** End of Conversion. Cleared automatically on data read.<br>• **Bit 1 (BUSY):** High during conversion. |
+| **`02`** | `DATA_REG` | RO | **Data Register.** Holds the most recent 12-bit conversion result. |
+| **`03`** | `INFO_REG` | RO | **Info Register.** Hardcoded Chip ID (e.g., `0xA`). |
 
 ---
 
