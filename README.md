@@ -68,7 +68,7 @@ The ADC acts as a standard SPI Slave optimized for low-latency access.
 | :--- | :--- | :--- | :--- |
 | **READ** | `00` | Read Register | Transmits current register value on MISO. Payload is ignored. |
 | **WRITE** | `01` | Write Register | Overwrites register with Payload. |
-| **SET** | `10` | Set Mask | Atomic OR: `Reg <= Reg | Payload`. |
+| **SET** | `10` | Set Mask | Atomic OR: `Reg <= Reg \| Payload`. |
 | **CLEAR** | `11` | Clear Mask | Atomic AND-NOT: `Reg <= Reg & ~Payload`. |
 
 ### Register Map
