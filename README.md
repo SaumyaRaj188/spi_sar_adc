@@ -69,21 +69,4 @@ Type 0
 * `2'b10`: `DATA_REG` (Data Register)
 * `2'b11`: `CAL_OFFSET_REG` (Calibration Register)
 
-### Usage Examples
-
-* **To WRITE `12'h5A5` to the `CTRL_REG`:**
-    * **CMD:** `01`
-    * **ADDR:** `00`
-    * **PAYLOAD:** `10110100101` (`5A5`)
-    * **Full 16-bit frame:** `0100 0101 1010 0101` = **`16'h45A5`**
-    * **Full 16-bit miso frame:** `0000 0000 0000 0000` = **`16'h0000`**
-
-* **To READ from the `STATUS_INFO_REG`:**
-    * **CMD:** `00`
-    * **ADDR:** `01`
-    * **PAYLOAD:** `000000000000` (Don't care)
-    * **Full 16-bit frame:** `0001 0000 0000 0000` = **`16'h1000`**
-    * **Full 16-bit miso frame:** `0000 ___ ___ ___` = **`16'h0___`**
-
-
 ***

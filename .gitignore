@@ -1,0 +1,16 @@
+# Ignore contents of wave_files but keep the folder
+iverilog/wave_files/*
+!iverilog/wave_files/.gitkeep
+
+# Ignore contents of sim_files but keep the folder
+iverilog/sim_files/*
+!iverilog/sim_files/.gitkeep
+
+# Ignore contents of librelane runs but keep the folder
+librelane/runs/*
+!librelane/runs/.gitkeep
+
+# General Verilog/EDA clean-up
+*.vvp
+*.log
+iverilog/scripts/*.out
