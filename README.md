@@ -1,4 +1,4 @@
-# SPI SAR ADC Controller SoC
+# SPI SAR ADC Controller
 
 A comprehensive project featuring an SPI-based Successive Approximation Register (SAR) Analog-to-Digital Converter (ADC) digital controller, verified within a RISC-V System-on-Chip (SoC) environment and implemented using the Sky130 process node.
 
