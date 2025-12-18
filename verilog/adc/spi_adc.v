@@ -1,14 +1,17 @@
 /*
+ * =================================================================================
  * Module: spi_adc
- * Description: Top-Level Wrapper.
- * - Instantiates adc_controller and adc_spi_slave.
- * - Generates adc_clk based on CLK_SEL.
- * - Manages 'Self-Clearing' START bit logic.
- * - Generates Interrupts from EOC.
+ * Description: Top-level wrapper for the SPI-based ADC module, integrating the 
+ * controller and the SPI interface components.
+ * * Author: Saumya Raj Singh
+ * Date: 2024
+ * License: MIT (Copyright (c) 2024 Saumya Raj Singh)
+ * =================================================================================
  */
+
 module spi_adc #(
     parameter SYS_CLK_FREQ = 10_000_000, // System Clock Frequency (e.g., 10MHz)
-    parameter ADC_WIDTH    = 12
+    parameter WIDTH    = 12
 )(
     input  sys_clk,
     input  reset_,
@@ -21,7 +24,7 @@ module spi_adc #(
     
     // External Controls
     input  comparator,     // From Analog Comparator
-    output [ADC_WIDTH-1:0] dac,
+    output [WIDTH-1:0] dac,
     output sample_and_hold,
     output pwr_gate,
     output dac_rst,
@@ -51,7 +54,7 @@ module spi_adc #(
 
     // -- 1. Clock Generation Logic --
     // Calculate total cycles per conversion (e.g., 12 + 2 = 14)
-    localparam CYCLES_PER_SAMPLE = ADC_WIDTH + 2;
+    localparam CYCLES_PER_SAMPLE = WIDTH + 2;
 
     // We derive adc_clk from sys_clk. 
     // Example: If Sys=50MHz, 16kHz div=3125, 8kHz div=6250.
@@ -138,7 +141,7 @@ module spi_adc #(
     
     // ADC Controller (Standard SAR Logic)
     adc_controller #(
-        .WIDTH(ADC_WIDTH)
+        .WIDTH(WIDTH)
     ) u_controller (
         .clk             (adc_clk),
         .reset_          (reset_ && bit_en), 
@@ -155,7 +158,7 @@ module spi_adc #(
 
     // SPI Slave (Register Interface)
     adc_spi_slave #(
-        .WIDTH(ADC_WIDTH)
+        .WIDTH(WIDTH)
     ) u_spi (
         .clk            (sys_clk),
         .reset_         (reset_),

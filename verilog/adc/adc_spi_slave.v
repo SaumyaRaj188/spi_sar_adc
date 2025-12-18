@@ -1,3 +1,14 @@
+/*
+ * =================================================================================
+ * Module: adc_spi_slave
+ * Description: Implements the SPI peripheral logic to receive control signals 
+ * and transmit converted digital data from the ADC.
+ * * Author: Saumya Raj Singh
+ * Date: 2024
+ * License: MIT (Copyright (c) 2024 Saumya Raj Singh)
+ * =================================================================================
+ */
+
 module adc_spi_slave #(
     parameter WIDTH = 12  // Default to 12-bit
 )(

@@ -1,20 +1,14 @@
 /*
  * =================================================================================
- * Module:      adc_controller
- *
- * Description: A Finite State Machine (FSM) based controller for a
- * Successive Approximation (SAR) ADC. This version uses an
- * integrated, standard SAR logic implementation for optimal performance.
- *
- * Features:
- * - Parameterized data width ('WIDTH') for different ADC resolutions.
- * - Standard single conversion handshaking protocol.
- * - Continuous conversion mode (if 'en_' is held low).
- * - Dedicated 'dac_en' signal to enable the external DAC.
- * - FSM is implemented using the robust "three-process" style.
- * - Datapath logic uses a high-performance distributed model.
+ * Module: adc_controller
+ * Description: Manages the control logic for the SAR ADC, interfacing between 
+ * the system bus and the SPI communication module.
+ * * Author: Saumya Raj Singh
+ * Date: 2024
+ * License: MIT (Copyright (c) 2024 Saumya Raj Singh)
  * =================================================================================
  */
+ 
 module adc_controller #(
     parameter WIDTH = 12 // Default ADC resolution
 )(

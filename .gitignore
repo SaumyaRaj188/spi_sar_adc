@@ -10,7 +10,14 @@ iverilog/sim_files/*
 librelane/runs/*
 !librelane/runs/.gitkeep
 
-# General Verilog/EDA clean-up
+# General EDA and System cleanup
 *.vvp
 *.log
-iverilog/scripts/*.out
+*.out
+iverilog/scripts/*.vvp
+iverilog/scripts/*.log
+
+# Python environment
+venv/
+__pycache__/
+.pytest_cache/

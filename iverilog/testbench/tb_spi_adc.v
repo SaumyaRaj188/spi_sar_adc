@@ -11,7 +11,7 @@ module tb_spi_adc;
     // 1. Configuration & Parameters
     // ========================================================================
     parameter SYS_CLK_FREQ = 50_000_000; // 50 MHz System Clock
-    parameter ADC_WIDTH    = 12;
+    parameter WIDTH    = 12;
     
     // Registers
     localparam REG_CTRL   = 2'b00;
@@ -35,10 +35,10 @@ module tb_spi_adc;
     wire miso;
 
     reg comparator;
-    wire [ADC_WIDTH-1:0] dac;
+    wire [WIDTH-1:0] dac;
     wire sample_and_hold, pwr_gate, dac_rst, irq, vref_sel, adc_clk_out;
 
-    reg [ADC_WIDTH-1:0] analog_volts;
+    reg [WIDTH-1:0] analog_volts;
     reg [11:0] spi_rx_data;
     integer start_time, end_time, duration;
     integer test_num = 0;
@@ -47,7 +47,7 @@ module tb_spi_adc;
     // ========================================================================
     // 3. DUT Instantiation
     // ========================================================================
-    spi_adc #( .SYS_CLK_FREQ(SYS_CLK_FREQ), .ADC_WIDTH(ADC_WIDTH) ) u_dut (
+    spi_adc #( .SYS_CLK_FREQ(SYS_CLK_FREQ), .WIDTH(WIDTH) ) u_dut (
         .sys_clk(sys_clk), .reset_(reset_),
         .cs(cs), .sck(sck), .mosi(mosi), .miso(miso),
         .comparator(comparator), .dac(dac),
