@@ -198,8 +198,6 @@ librelane config.json
 
 **Saumya Raj Singh** ([@SaumyaRaj188](https://github.com/SaumyaRaj188))
 
-*Please reach out via the contact details on my GitHub profile.*
-
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
