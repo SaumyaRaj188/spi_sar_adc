@@ -19,7 +19,8 @@ iverilog -o iverilog/sim_files/spi_adc_sim \
     iverilog/testbench/tb_spi_adc.v \
     verilog/adc/spi_adc.v \
     verilog/adc/adc_controller.v \
-    verilog/adc/adc_spi_slave.v
+    verilog/adc/adc_spi_slave.v \
+    verilog/adc/adc_bist_engine.v \
 
 # Check if compilation succeeded
 if [ $? -ne 0 ]; then

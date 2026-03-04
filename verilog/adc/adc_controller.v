@@ -3,9 +3,10 @@
  * Module: adc_controller
  * Description: Manages the control logic for the SAR ADC, interfacing between 
  * the system bus and the SPI communication module.
- * * Author: Saumya Raj Singh
- * Date: 2024
- * License: MIT (Copyright (c) 2024 Saumya Raj Singh)
+ *
+ * Author: Saumya Raj Singh
+ * Date: 2026
+ * License: MIT (Copyright (c) 2026 Saumya Raj Singh)
  * =================================================================================
  */
  

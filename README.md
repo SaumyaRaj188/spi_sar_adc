@@ -13,8 +13,8 @@ A comprehensive project featuring an SPI-based Successive Approximation Register
 4. [System Architecture](#system-architecture)
 5. [Verification Strategy](#verification-strategy)
 6. [Physical Implementation](#physical-implementation)
-7. [Getting Started](#getting-started)
-8. [Author & License](#author)
+7. [Software Used](#software-used)
+8. [Author & License](#author-and-license)
 
 ---
 
@@ -33,6 +33,7 @@ Finally, the design was taken through a complete RTL-to-GDSII physical implement
 * **Interface:** Standard 4-wire SPI Slave (Mode 0) with packet-based protocol.
 * **Sampling Rate:** Programmable clock dividers supporting standard rates (e.g., 8ksps, 16ksps).
 * **Power Management:** Aggressive clock gating logic to minimize dynamic power during idle states.
+* [cite_start]**Built-In Self-Test (BIST):** Automated digital verification using a 12-bit LFSR for pseudo-random stimulus and a MISR for signature analysis without requiring analog inputs[cite: 1, 5, 11].
 * **Atomic Operations:** Custom register map supporting atomic SET and CLEAR bit manipulations.
 * **SoC Integration:** Validated via MMIO (Memory Mapped I/O) with a RISC-V CPU.
 
@@ -41,8 +42,9 @@ Finally, the design was taken through a complete RTL-to-GDSII physical implement
 ## Repository Structure
 
 * **[docs/](docs/)**: Detailed design reports, presentations, and technical documentation.
-* **[verilog/](verilog/)**: Source RTL for the ADC controller (`adc_controller.v`), SPI slave (`adc_spi_slave.v`), and the top-level wrapper (`spi_adc.v`). Also includes the PicoRV32-based SoC for testing.
+* **[verilog/](verilog/)**: Source RTL for the ADC controller (`adc_controller.v`), SPI slave (`adc_spi_slave.v`), BIST engine (`adc_bist_engine.v`), and the top-level wrapper (`spi_adc.v`). Also includes the PicoRV32-based SoC for testing.
 * **[iverilog/](iverilog/)**: Simulation scripts, testbenches, and signal configuration files.
+* **[python/](python/)**: Python simulation scripts, including the cycle-accurate BIST golden signature calculator.
 * **[riscv_toolchain/](riscv_toolchain/)**: Firmware source code (C and Assembly) and compilation scripts for the processor.
 * **[librelane/](librelane/)**: Configuration files (`config.json`, `pin_order.cfg`) for physical design. *Note: Full run data is not included to maintain a lightweight repo.*
 
@@ -74,16 +76,16 @@ The ADC acts as a standard SPI Slave optimized for low-latency access.
 ### Register Map
 | Addr | Name | R/W | Description |
 | :--- | :--- | :--- | :--- |
-| **`00`** | `CTRL_REG` | R/W | **Control Register**.<br>• **Bit 0 (ADC_EN):** 1=Enable, 0=Shutdown.<br>• **Bit 1 (START):** Write 1 to trigger conversion (Self-clearing).<br>• **Bit 2 (AUTO):** 1=Continuous Mode, 0=Single Shot.<br>• **Bit 3 (VREF_SEL):** 0=Internal, 1=External.<br>• **Bit 4 (INT_EN):** 1=Enable hardware IRQ pin.<br>• **Bit 6 (CLK_SEL):** 0=8ksps, 1=16ksps. |
-| **`01`** | `STATUS_REG` | RO | **Status Register**.<br>• **Bit 0 (EOC):** End of Conversion. Cleared automatically on data read.<br>• **Bit 1 (BUSY):** High during conversion. |
-| **`02`** | `DATA_REG` | RO | **Data Register.** Holds the most recent 12-bit conversion result. |
-| **`03`** | `INFO_REG` | RO | **Info Register.** Hardcoded Chip ID (e.g., `0xA`). |
+| **`00`** | `CTRL_REG` | R/W | **Control Register**.<br>• **Bit 0 (ADC_EN):** 1=Enable, 0=Shutdown.<br>• **Bit 1 (START):** Write 1 to trigger conversion (Self-clearing).<br>• **Bit 2 (AUTO):** 1=Continuous Mode, 0=Single Shot.<br>• **Bit 3 (VREF_SEL):** 0=Internal, 1=External.<br>• **Bit 4 (INT_EN):** 1=Enable hardware IRQ pin.<br>• **Bit 5 (BIST_EN):** 1=Start Automated Built-In Self-Test. <br>• **Bit 6 (CLK_SEL):** 0=8ksps, 1=16ksps. |
+| **`01`** | `STATUS_REG` | R | **Status Register**.<br>• **Bit 0 (EOC):** End of Conversion. [cite_start]Cleared automatically on data read.<br>• **Bit 1 (BUSY):** High during conversion.<br>• **Bit 2 (BIST_DONE):** High when the 64-conversion BIST sequence is complete [cite: 2, 105][cite_start].<br>• **Bit 3 (BIST_PASS):** High if the MISR signature matches the golden signature (`12'h793`)[cite: 26, 105]. |
+| **`02`** | `DATA_REG` | R | [cite_start]**Data Register.** Holds the most recent 12-bit conversion result, or the final compressed MISR signature if BIST is enabled[cite: 153]. |
+| **`03`** | `INFO_REG` | R | **Info Register.** Hardcoded Chip ID (e.g., `0xA`). |
 
 ---
 
 ## System Architecture
 
-The architecture is deliberately flattened to minimize signal latency. It consists of three primary modules:
+The architecture is deliberately flattened to minimize signal latency. It consists of four primary modules:
 
 1.  **`adc_controller` (The Core)**:
     * Implements the Successive Approximation algorithm using a Finite State Machine (FSM).
@@ -92,12 +94,17 @@ The architecture is deliberately flattened to minimize signal latency. It consis
 
 2.  **`adc_spi_slave` (The Bridge)**:
     * Manages high-speed serialization/deserialization.
-    * Decodes the custom register map (Control, Status, Data, Info).
+    * [cite_start]Decodes the custom register map (Control, Status, Data, Info) and exposes FSM/BIST diagnostics[cite: 74].
     * Implements "look-ahead" logic for zero-latency reads.
 
-3.  **`spi_adc` (Top Level Wrapper)**:
+3.  **`adc_bist_engine` (The Tester)**:
+    * [cite_start]Automatically verifies digital logic by driving the fake comparator with the MSB of a 12-bit pseudo-random LFSR[cite: 1, 10].
+    * [cite_start]Compresses the parallel ADC data over 64 conversions into a final test signature using a MISR[cite: 2, 11].
+
+4.  **`spi_adc` (Top Level Wrapper)**:
     * Encapsulates the system and manages clock domain generation.
     * Derives the analog sampling clock from the system clock with configurable prescalers.
+    * [cite_start]Multiplexes the physical analog pins and the automated BIST engine signals based on the `CTRL_REG`[cite: 113, 127].
 
 ---
 
@@ -107,7 +114,7 @@ The verification strategy is bifurcated into two phases:
 
 ### 1. Block-Level Verification
 Utilizes a self-checking testbench to verify protocol compliance and timing adherence.
-* **Coverage:** 12 distinct test scenarios covering Register R/W, VREF control, Data Integrity, and Interrupt Masking.
+* **Coverage:** 13 distinct test scenarios covering Register R/W, VREF control, Data Integrity, BIST Sequence verification, and Interrupt Masking.
 * **Results:** Verified correct FSM transitions and SPI Mode 0 compliance.
 
 ### 2. SoC-Level Verification (Hardware-Firmware Co-Simulation)
@@ -129,75 +136,18 @@ The physical layout was generated using the **LibreLane "Classic" Flow** (OpenRO
 
 ---
 
-## Getting Started
-
-### Prerequisites
+## Software Used
 
 Ensure you have the following tools installed and added to your `$PATH`:
-1.  **Icarus Verilog (v12.0+)**: For RTL simulation.
-2.  **GTKWave**: For waveform analysis.
-3.  **RISC-V GNU Toolchain**: Specifically `riscv64-unknown-elf-gcc` for compiling firmware.
-4.  **LibreLane / OpenLane**: For reproducing the physical design (GDSII).
-
-### Quick Start: Running the SoC Simulation
-
-Follow these steps to compile the C firmware and run the full system simulation.
-
-#### 1. Compile the Firmware
-First, compile the C driver code into a hex file that the RISC-V processor can load into its memory.
-```bash
-# Navigate to the toolchain directory
-cd riscv_toolchain
-
-# Compile the firmware (source/adc_read.c -> firmware/firmware.hex)
-# This uses the linker script to map code to the SoC's memory space
-./compile.sh
-```
-
-#### 2. Run the RTL Simulation
-Once the `firmware.hex` is generated, compile the Verilog testbench and run the simulation.
-```bash
-# Navigate to the simulation directory
-cd ../iverilog
-
-# Compile the design and testbench
-iverilog -o soc_sim.out -I ../verilog/ ../verilog/spi_adc.v ../verilog/adc_controller.v ../verilog/adc_spi_slave.v testbench/tb_soc_adc.v
-
-# Execute the simulation
-vvp soc_sim.out
-```
-
-*Expected Output:*
-You should see the self-checking testbench output indicating passed tests:
-```text
-SINGLE SHOT (16kHz) PASSED! (Got 2566)
-AUTO SAMPLE 1 (8kHz) PASSED! (Got 1542)
-...
-ALL TESTS PASSED
-```
-
-#### 3. View Waveforms
-To analyze the SPI packets and internal FSM state transitions:
-```bash
-gtkwave wave_files/tb_soc_adc.vcd
-```
-
-### Physical Implementation
-To reproduce the GDSII layout using the Sky130 PDK:
-```bash
-# Navigate to the librelane directory
-cd librelane
-
-# Run the LibreLane flow using the provided config
-librelane config.json 
-```
+1.  **[Icarus Verilog](https://steveicarus.github.io/iverilog/)**: For RTL simulation.
+2.  **[GTKWave](https://gtkwave.sourceforge.net/)**: For waveform analysis.
+3.  **[RISC-V GNU Toolchain](https://github.com/riscv-collab/riscv-gnu-toolchain)**: Specifically `riscv64-unknown-elf-gcc` for compiling firmware.
+4.  **[LibreLane](https://librelane.readthedocs.io/en/stable/)**: For reproducing the physical design (GDSII).
 
 ---
 
-## Author
+## Author and License
 
 **Saumya Raj Singh** ([@SaumyaRaj188](https://github.com/SaumyaRaj188))
-
-## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.

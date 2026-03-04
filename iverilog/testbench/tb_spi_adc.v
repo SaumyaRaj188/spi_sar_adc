@@ -4,6 +4,7 @@
  * Module: tb_spi_adc
  * Description: Exhaustive Verification Suite for SPI ADC System.
  * CORRECTED: Timing checks aligned with 14x hardware scaling at 50MHz.
+ * UPDATED: Added comprehensive Built-In Self-Test (BIST) verification.
  */
 module tb_spi_adc;
 
@@ -20,12 +21,13 @@ module tb_spi_adc;
     localparam REG_INFO   = 2'b11;
 
     // Control Bits
-    localparam BIT_ADC_EN = 0;
-    localparam BIT_START  = 1;
-    localparam BIT_AUTO   = 2;
-    localparam BIT_VREF   = 3;
-    localparam BIT_INT_EN = 4;
-    localparam BIT_CLK_SEL= 6;
+    localparam BIT_ADC_EN  = 0;
+    localparam BIT_START   = 1;
+    localparam BIT_AUTO    = 2;
+    localparam BIT_VREF    = 3;
+    localparam BIT_INT_EN  = 4;
+    localparam BIT_BIST_EN = 5; // NEW: BIST Enable Bit
+    localparam BIT_CLK_SEL = 6;
 
     // ========================================================================
     // 2. Signals
@@ -277,8 +279,42 @@ module tb_spi_adc;
         spi_read(REG_DATA); #200;
         check(shift_in[11:0], 12'h999, "Auto 2");
 
-        // TEST 12: Disable
-        test_num=12; $display("\nTEST %0d: Global Disable", test_num);
+        // TEST 12: BIST Engine (Built-In Self-Test)
+        test_num=12; $display("\nTEST %0d: Built-In Self-Test (BIST)", test_num);
+        adc_hard_reset();
+        
+        // Start BIST (Enable ADC + Enable Interrupts + Enable BIST)
+        spi_write(REG_CTRL, (1<<BIT_ADC_EN)|(1<<BIT_INT_EN)|(1<<BIT_BIST_EN));
+        
+        start_time = $time;
+        fork : t13_wait
+            begin wait(irq); disable t13_wait; end
+            // Wait up to 10ms for 64 conversions (8ksps = 125us * 64 = 8,000,000ns)
+            begin #10_000_000; disable t13_wait; end
+        join
+        end_time = $time;
+        duration = end_time - start_time;
+
+        if (!irq) begin
+            $display("  [FAIL] BIST IRQ Timeout (Took %0d ns)", duration);
+            $finish;
+        end else begin
+            $display("  [INFO] BIST completed in %0d ns", duration);
+        end
+        
+        // Read Status to check BIST flags [3] Pass, [2] Done, [1] Busy, [0] EOC
+        spi_read(REG_STATUS); #200;
+        if (shift_in[3:2] == 2'b11) 
+            $display("  [PASS] BIST Status flags correct (Done & Pass)");
+        else 
+            $display("  [FAIL] BIST Status incorrect: %b", shift_in[3:2]);
+            
+        // Read Data to check final signature
+        spi_read(REG_DATA); #200;
+        check(shift_in[11:0], 12'h793, "BIST MISR Signature");
+
+        // TEST 13: Disable
+        test_num=13; $display("\nTEST %0d: Global Disable", test_num);
         spi_write(REG_CTRL, 0); #1000;
         if (!pwr_gate && !dac_rst) $display("  [PASS] Inactive"); else $display("  [FAIL] Active");
 
