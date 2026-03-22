@@ -14,7 +14,9 @@ module spi_adc #(
     parameter SYS_CLK_FREQ = 10_000_000, // System Clock Frequency (e.g., 10MHz)
     parameter WIDTH    = 12
 )(
-    input  sys_clk,
+    input  ext_clk_pin,   // External Pin
+    input  int_rc_clk,    // Internal RC
+    input  clk_src_sel,       // The Mux selector (0 = RC, 1 = Pin)
     input  reset_,
     
     // SPI Pins
@@ -60,6 +62,9 @@ module spi_adc #(
     wire bit_int_en  = ctrl_reg[4]; // INT_EN
     wire bit_bist_en = ctrl_reg[5]; // NEW: BIST Enable Bit
     wire bit_clk_sel = ctrl_reg[6]; // CLK_SEL (0=8k, 1=16k)
+    
+    wire sys_clk; 
+    assign sys_clk = clk_src_sel ? ext_clk_pin : int_rc_clk;
 
     // ============================================================================
     // BIST MULTIPLEXER (Wrapper-Based Test Isolation)
